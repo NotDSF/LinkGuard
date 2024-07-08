@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://nordcdn.net/ds/css/3.1.1/nord.min.css" integrity="sha384-zz2Vh/uaPtnKKnKq4a8aP/R7ybJEZD3LuwnvmLE+p42C+Zjr2R0Y+PKwdABWc61A" crossorigin="anonymous" />
+    <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
+    <link rel="icon" type="image/x-icon" href="https://buxloot.com/favicon.ico">
+    <title>BuxLoot | LinkGuard</title>
+</head>
+<body>
+    <style>
+        body {
+            background: var(--n-color-surface);
+            margin: 0;
+        }
+    </style>
+
+    <nord-header>
+        <img src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto,h_55/lgzd4xtzt8l1sjurafyn" alt="">
+        <nord-divider direction="vertical"></nord-divider>
+        <h1 class="n-typescale-l">LinkGuard</h1>
+
+        <nord-button href="https://buxloot.com/earn" slot="end"><nord-icon name="generic-bank" slot="end"></nord-icon>Earn More Robux</nord-button>
+        <nord-button href="https://linkguard.cc" variant="primary" slot="end">
+          <nord-icon slot="start" name="interface-home"></nord-icon>
+          Home
+        </nord-button>
+    </nord-header>
+
+    <nord-empty-state class="n-gap-m">
+        <h2>Redirecting...</h2>
+        <p>You've completed 1/1 link, we're awarding the 1 B$ to your account</p>
+        <nord-progress-bar value="100"></nord-progress-bar>
+    </nord-empty-state>
+
+    <script>
+        <%-script%>
+    </script>
+</body>
+</html>

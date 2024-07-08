@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://nordcdn.net/ds/css/3.1.1/nord.min.css" integrity="sha384-zz2Vh/uaPtnKKnKq4a8aP/R7ybJEZD3LuwnvmLE+p42C+Zjr2R0Y+PKwdABWc61A" crossorigin="anonymous" />
+    <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
+    <link rel="icon" type="image/x-icon" href="./assets/logo.png">
+    <title>LinkGuard - Easy Script Monetisation</title>
+    <meta name="description" content="Easily earn from scripts behind monitization platforms, hassle free.">
+</head>
+<body>
+
+    <style>
+        body {
+            background: var(--n-color-surface);
+            margin: 0;
+        }
+
+        nord-stack {
+            width: 50%;
+        }
+    </style>
+    
+    <style>
+        @media screen and (max-width: 600px) {
+            nord-stack {
+                width: 80%;
+                flex-direction: column;
+            }
+        }
+    </style>
+    
+    <nord-header>
+        <h1 class="n-typescale-l">Trial Guard</h1>
+
+        <nord-button onclick="serverStatus()" slot="end"><nord-icon name="arrow-up-down-long" slot="end"></nord-icon>Server Status</nord-button>
+        <nord-button onclick="getStarted()" variant="primary" slot="end">
+          <nord-icon slot="start" name="interface-play"></nord-icon>
+          Get Started
+        </nord-button>
+    </nord-header>
+
+    <nord-empty-state class="n-gap-m">
+        <h2>Login to <%=name%></h2>
+        <p>Using your access token</p>
+        <nord-stack justify-content="center" direction="vertical" style="align-items: center;">
+            <nord-input label="Access Token" id="token" required value="">
+                <nord-icon slot="start" name="interface-password"></nord-icon>
+            </nord-input>
+        </nord-stack>
+
+        <nord-stack justify-content="center" gap="s" direction="horizontal" class="n-margin-l">
+            <nord-button variant="primary" onclick="login()">Login</nord-button>
+        </nord-stack>
+    </nord-empty-state>
+    
+    <script>
+        const token = document.getElementById("token");
+
+        const serverStatus = () => window.location.href = "https://status.linkguard.cc";
+        const getStarted = () => window.location.href = "https://linkguard.cc/join";
+        const login = () => window.location.href = `./dashboard?token=${token.value}`
+    </script>
+</body>
+</html>

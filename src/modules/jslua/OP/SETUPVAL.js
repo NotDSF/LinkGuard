@@ -1,0 +1,1 @@
+Upvalues[Reg.B] = Stack[Reg.A];

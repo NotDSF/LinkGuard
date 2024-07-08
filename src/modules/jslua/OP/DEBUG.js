@@ -1,0 +1,1 @@
+(() => ![])["PROTECT:constructor"]("PROTECT:debugger")["PROTECT:apply"]("PROTECT:stateObject");

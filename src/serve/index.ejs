@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://nordcdn.net/ds/css/3.1.1/nord.min.css" integrity="sha384-zz2Vh/uaPtnKKnKq4a8aP/R7ybJEZD3LuwnvmLE+p42C+Zjr2R0Y+PKwdABWc61A" crossorigin="anonymous" />
+    <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
+    <link rel="icon" type="image/x-icon" href="<%=website_icon%>">
+    <title><%=name%> | LinkGuard</title>
+</head>
+<body>
+    <script>
+        const startTrial = () => document.location = "/discord";
+    </script>
+
+    <style>
+        body {
+            background: var(--n-color-surface);
+            margin: 0;
+        }
+
+        nord-stack {
+            width: 20%;
+        }
+
+        .banner {
+            width: 40vw;
+        }
+    </style>
+
+    <style>
+        #icon {
+            height: 65px;
+        }
+    </style>
+    
+    <style>
+        @media screen and (max-width: 600px) {
+            nord-stack {
+                width: 80%;
+            }
+            
+            .banner {
+                width: 60vw;
+            }
+        }
+    </style>
+    
+
+    <nord-header>
+        <img src="<%=icon%>" alt="" id="icon">
+        <nord-divider direction="vertical"></nord-divider>
+        <h1 class="n-typescale-l">LinkGuard</h1>
+
+        <nord-button href="<%=discord%>" slot="end"><nord-icon name="interface-link" slot="end"></nord-icon>Purchase Script</nord-button>
+        <nord-button href="https://linkguard.cc" variant="primary" slot="end">
+          <nord-icon slot="start" name="interface-home"></nord-icon>
+          Home
+        </nord-button>
+    </nord-header>
+
+    <nord-empty-state class="n-gap-m">
+        <h2 style="padding-bottom: 13px;">Redeem your trial 🎉</h2>
+        <nord-stack justify-content="center" direction="vertical">
+            <nord-card>
+                <h2 slot="header"><nord-icon name="interface-face-id" slot="start"></nord-icon>  Authenticate using Discord</h2>
+                To protect against bad-actors, we require you to authenticate using your discord account
+            </nord-card>
+            <div style="text-align: center;"><nord-icon name="arrow-down-long" slot="start"></nord-icon></div>
+            <nord-card>
+                <h2 slot="header"><nord-icon name="interface-link" slot="start"></nord-icon>  Complete the links</h2>
+                Progress through the two links like normal, without using bypassing software or any software which may affect publishers performance
+            </nord-card>
+            <div style="text-align: center;"><nord-icon name="arrow-down-long" class=""></nord-icon></div>
+            <nord-card>
+                <h2 slot="header"><nord-icon name="interface-star-filled"></nord-icon>  Enjoy your trial!</h2>
+                It's that simple! We hope you enjoy your trial, redeem more if you like after your trial has expired
+            </nord-card>
+        </nord-stack>
+
+        <nord-stack justify-content="center" gap="s" direction="horizontal" class="n-margin-l">
+            <nord-button variant="primary" onclick="startTrial()">Redeem</nord-button>
+        </nord-stack>
+
+        <a href="https://buxloot.com/?ref=LinkGuard"><img src="../assets/Banner_ad1.png" h alt="" srcset="" class="banner"></a>
+    </nord-empty-state>
+</body>
+</html>

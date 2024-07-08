@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://nordcdn.net/ds/css/3.1.1/nord.min.css" integrity="sha384-zz2Vh/uaPtnKKnKq4a8aP/R7ybJEZD3LuwnvmLE+p42C+Zjr2R0Y+PKwdABWc61A" crossorigin="anonymous" />
+    <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
+    <link rel="icon" type="image/x-icon" href="./assets/logo.png">
+    <title>LinkGuard - Keep Your Monitization Links Protected</title>
+    <meta name="description" content="Reward your users easily and earn from links securely using linkguard.cc, supporting over 100 publishers including linkvertise and lootlabs, while also detecting bypass.city & others.">
+    <meta property="og:image" content="https://i.imgur.com/OvdXF10.png" />
+    <meta property="twitter:image" content="https://i.imgur.com/OvdXF10.png" />
+</head>
+<body>
+    <style>
+        body {
+            background: var(--n-color-surface);
+            margin: 0;
+        }
+
+        #info {
+            width: 65%;
+        }
+
+        nord-stack {
+            width: 50%;
+        }
+    </style>
+    
+    <style>
+        @media screen and (max-width: 600px) {
+            nord-stack, #info {
+                width: 80%;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+    
+    <nord-header>
+        <h1 class="n-typescale-l">LinkGuard</h1>
+        <nord-divider direction="vertical"></nord-divider>
+        <img src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto,h_50/d4ecdjm7nxkd45iib96y" alt="" srcset="">
+        <nord-button href="https://status.linkguard.cc" slot="end"><nord-icon name="arrow-up-down-long" slot="end"></nord-icon>Server Status</nord-button>
+        <nord-button href="https://docs.linkguard.cc" slot="end">
+          <nord-icon slot="end" name="interface-content-book"></nord-icon>
+          Documentation
+        </nord-button>
+    </nord-header>
+
+    <nord-empty-state class="n-gap-m">
+        <h2>Welcome to LinkGuard!</h2>
+        <p>Easily earn from scripts/services behind monitization platforms, hassle free.</p>
+        <nord-stack justify-content="center" direction="horizontal">
+            <nord-card>
+                <h2 slot="header"><nord-icon name="generic-cable" slot="start"></nord-icon>  Seemless Integration.</h2>
+                We work with all major licensing and publishing platforms, no hassle, connect and earn!
+            </nord-card>
+            <nord-card>
+                <h2 slot="header"><nord-icon name="generic-chip" slot="start"></nord-icon>  Built from the ground up.</h2>
+                Our services have been specifically fine-tuned to maximise and secure your earnings
+            </nord-card>
+            <nord-card>
+                <h2 slot="header"><nord-icon name="interface-shield" slot="start"></nord-icon>  Anti-Bypass Protection.</h2>
+                We are always one step-ahead attackers, rest assured with our never-seen detection technology 
+            </nord-card>
+        </nord-stack>
+
+        <nord-stack justify-content="center" gap="s" direction="horizontal" class="n-margin-l" style="text-align: center;">
+            <nord-button variant="primary" href="./join">Get Started</nord-button>
+        </nord-stack>
+    </nord-empty-state>
+
+    <nord-empty-state>
+        <nord-stack justify-content="center" direction="horizontal" id="info">
+            <nord-empty-state>
+                <h3>Maximise your earnings</h3>
+                <p>Unlike our competitors, we directly work with you to help you maximise your earning potential to the highest level, no losses around here!</p>
+            </nord-empty-state>
+            <nord-divider direction="vertical"></nord-divider>
+            <nord-empty-state>
+                <h4>Lock content & Stay protected</h4>
+                <p>We're always one-step ahead of attackers and our infrastructure detects them in a heartbeat, which ensures full monetization</p>
+            </nord-empty-state>
+        </nord-stack>
+    </nord-empty-state>
+
+    <nord-divider direction="horizontal"></nord-divider>
+
+    <nord-empty-state>
+        <h3>Client Testimonials</h3>
+        <p>LinkGuard is already integrated into 5 massive scripts/services, covering over 50K+ users, generating over $50 a day 🎉</p>
+        <nord-stack justify-content="center" direction="vertical">
+            <nord-card>
+                <h2 slot="header"><nord-avatar size="s" src="./assets/vFishy.png"></nord-avatar> vFishy - WiiHub</h2>
+                "linkguard.cc has helped my script generate over $600 passively in just a period of 6 months, I highly recommend this to any developer looking to monetize their content"
+            </nord-card>
+            
+            <nord-card>
+                <h2 slot="header"><nord-avatar size="s" src="./assets/neptune.gif"></nord-avatar> neptune - Vexium Hub</h2>
+                "LinkGuard introduces a new way for developers to expand their revenue streams reach more users. It is very useful for games that won't be purchased often but are in demand. Every developer can to benefit from LinkGuard."
+            </nord-card>
+        </nord-stack>
+    </nord-empty-state>
+    
+    <nord-divider direction="horizontal"></nord-divider>
+
+    <nord-empty-state>
+        <nord-stack  justify-content="center"  direction="horizontal">
+            <a href="./wiihub"><nord-avatar src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto/pg3qirbrbmu7msc1qxqd" name="WiiHub" size="xl"></nord-avatar></a>
+            <a href="https://buxloot.com"><nord-avatar src="https://buxloot.com/favicon.ico" name="Buxloot" size="xl"></nord-avatar></a>
+            <a href="./77fuscator"><nord-avatar src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto/hwuf6i58dsjpz5b9yjqp" name="77fuscator" size="xl"></nord-avatar></a>
+            <a href="./zenith"><nord-avatar src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto/ny392mrvxlorod4gb5fa" name="Zenith" size="xl"></nord-avatar></a>
+            <a href="./reaperhub"><nord-avatar src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto/p3gphu1l1fomdd80dtd7" name="Reaper Hub" size="xl"></nord-avatar></a>
+            <a href="./zinchub"><nord-avatar src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto/nku6ablzobndspv3owme" name="Zinc Hub" size="xl"></nord-avatar></a> 
+        </nord-stack>
+    </nord-empty-state>
+
+    <!----
+            <nord-empty-state>
+        <h3>Global Statistics</h3>
+        <nord-stack justify-content="center" direction="horizontal">
+            <div style="text-align: center;">
+                <h4>Trials Given</h4>
+                <p>5,000+</p>
+            </div>
+            <nord-divider direction="vertical"></nord-divider>
+            <div style="text-align: center;">
+                <h4>Threats Blocked</h4>
+                <p>300+</p>
+            </div>
+            <nord-divider direction="vertical"></nord-divider>
+            <div style="text-align: center;">
+                <h4>Revenue Generated</h4>
+                <p>$1,000+</p>
+            </div>
+        </nord-stack>
+    </nord-empty-state>
+    -->
+</body>
+</html>
