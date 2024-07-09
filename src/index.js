@@ -83,7 +83,7 @@ fastify.get("/stats", (request, reply) => {
     })
 })
 
-fastify.get("/join", (request, reply) => reply.redirect("https://discord.gg/Q3fbS54ZED"));
+fastify.get("/join", (request, reply) => reply.redirect("https://discord.gg/tBvTkz9Mwv"));
 fastify.get("/dev1", (request, reply) => reply.redirect("./dev/stage-1"))
 fastify.get("/dev2", (request, reply) => reply.redirect("./dev/stage-2"))
 
@@ -111,11 +111,6 @@ setInterval(async () => {
 setInterval(() => {
     fetch("https://uptime.betterstack.com/api/v1/heartbeat/f8jAhSwt6v1U1vVPyb7F2SfZ")   
 }, 180000);
-
-for (let file of readdirSync(path.join(__dirname, "configs"))) {
-    let data = require(path.join(__dirname, `configs/${file}`))
-    fastify.get(`/${data.name.toLowerCase()}`, (request, reply) => reply.redirect(`/${data.name.toLowerCase()}/`))
-}
 
 (async () => {
     try {
