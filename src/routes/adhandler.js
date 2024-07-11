@@ -1,0 +1,252 @@
+const { linkvertise } = require("../../config.json");
+const { readFileSync } = require("fs");
+const path = require("path");
+const GenerateScript = require("../modules/jslua");
+const DiscordOauth2 = require("discord-oauth2");
+const database = require("../modules/database");
+const Database = new database();
+const tokens = new Map();
+
+const oauth = new DiscordOauth2({
+    clientId: process.env.DISCORD_OAUTH_ID,
+    clientSecret: process.env.DISCORD_OAUTH_SECRET,
+    redirectUri: `${HOSTNAME}/discord`
+});
+
+let RawScript = readFileSync(path.join(__dirname, "luac.out"), "binary");
+
+/*
+{
+    stage: string,
+    complete: boolean,
+    name: string,
+    ip: string,
+
+}
+*/
+
+/**
+ * @param {import("fastify").FastifyInstance} fastify  Encapsulated Fastify Instance
+ * @param {Object} options plugin options, refer to https://www.fastify.io/docs/latest/Reference/Plugins/#plugin-options
+*/
+async function routes(fastify, options) {	
+    fastify.get("/", async (request, reply) => {
+        const { name } = request.params;
+        const Project = await Database.GetProject(name);
+        const session = sessions.get(request.IPAddress);
+        
+        if (!Project || !Project.Enabled) {
+            return reply.redirect("/");
+        }
+
+        if (session && session.name !== Project.Name) {
+            sessions.delete(request.IPAddress);
+        }
+
+        if (session && session.complete) {
+            return reply.redirect("./finished");
+        }
+
+        sessions.set(request.IPAddress, {
+            stage: "main",
+            complete: false,
+            name: Project.Name,
+            ip: request.IPAddress,
+            project: Project
+        });
+
+        return reply.view("index.ejs", { name: Project.Name });
+    });
+
+    // Redirects to #1 Link
+    fastify.get("/discord", async (request, reply) => {
+        const { code } = request.query;
+        const session = sessions.get(request.IPAddress);
+
+        if (!session || session.stage !== "linking") {
+            return reply.redirect("./");
+        }
+
+        const response = await oauth.tokenRequest({
+            code,
+            scope: "identify guilds",
+            grantType: "authorization_code"
+        });
+
+        const servers = await oauth.getUserGuilds(response.access_token);
+        if (!servers.find(server => server.id === session.project.ServerID)) {
+            return reply.view("discord.ejs", {
+                name: session.name,
+                discord: session.project.ServerInvite
+            });
+        }
+
+        const duser = await oauth.getUser(response.access_token);
+        
+        let User = await Database.GetUser(duser.id);
+        if (!User) {
+            User = await Database.CreateUser(duser.id);
+        }
+
+        if (!User.IPs.find(ip => ip == request.IPAddress)) {
+            await Database.AddKnownIPAddress(User.DiscordID, request.IPAddress);
+        }
+
+        session.stage = "link-1";
+        session.user = User;
+        sessions.set(request.IPAddress, session);
+
+        reply.redirect(session.project.LinkOne);
+    });
+
+    // Redirects to #2 Link
+    fastify.get("/stage-1", async (request, reply) => {
+        const session = sessions.get(request.IPAddress);
+        if (!session || session.stage !== "link-1") {
+            return reply.redirect("./");
+        }
+
+        console.log(request.url, request.headers.referer);
+
+        if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
+            sessions.delete(request.IPAddress);
+
+            return reply.redirect("./");
+        }
+
+        const token = crypto.randomUUID();
+        session.stage = "link-2";
+        session.token = token;
+
+        console.time("Generated Loader");
+        const script = await GenerateScript(RawScript, {
+            Node: false,
+            EncryptConstants: true,
+            Debug: false,
+            Link: `${HOSTNAME}/${session.name}/v/${token}`,
+            LINKVERTISE_LINK: session.project.LinkTwo
+        });
+        console.timeEnd("Generated Loader");
+
+        tokens.set(token, { used: false, session: session });
+        sessions.set(request.IPAddress, session);
+
+        return reply.view("stage.ejs", {
+            name: session.name,
+            stage: 1,
+            progress: (100 / 3) * 1,
+            script
+        });
+    });
+
+    // Redirects to #3 Link (our linkvertise)
+    fastify.get("/stage-2", async (request, reply) => {
+        const session = sessions.get(request.IPAddress);
+        if (!session || session.stage !== "link-2") {
+            return reply.redirect("./");
+        }
+
+        console.log(request.url, request.headers.referer);
+
+        if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
+            sessions.delete(request.IPAddress);
+
+            return reply.redirect("./");
+        }
+
+        session.stage = "link-3";
+        sessions.set(request.IPAddress, session);
+
+        return reply.view("stage.ejs", {
+            name: session.name,
+            stage: 2,
+            progress: (100 / 3) * 2,
+            script: `setTimeout(() => window.location.href = '${linkvertise}', 4000)`
+        });
+    });
+
+    // Redirects to /finished
+    fastify.get("/stage-3", async (request, reply) => {
+        const session = sessions.get(request.IPAddress);
+        if (!session || session.stage !== "link-3") {
+            return reply.redirect("./");
+        }
+
+        console.log(request.url, request.headers.referer);
+
+        if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
+            sessions.delete(request.IPAddress);
+
+            return reply.redirect("./");
+        }
+
+        const token = tokens.get(session.token);
+        if (!token || !token?.used) {
+            sessions.delete(request.IPAddress);
+            tokens.delete(session.token);
+
+            return reply.redirect("./");
+        }
+
+        const Expire = new Date();
+        Expire.setHours(Expire.getHours() + session.project.UserCooldown);
+
+        session.license = crypto.randomUUID();
+        session.stage = "finished";
+        session.complete = true;
+        session.expire = Expire.getTime();
+
+        sessions.set(request.IPAddress, session);
+
+        try {
+            await Database.IncrementCompleted(session.user.DiscordID, 3);
+        } catch (er) {
+            console.log(er);
+        }
+        
+        return reply.redirect(`${HOSTNAME}/${session.name}/finished`);
+    });
+
+    fastify.get("/finished", (request, reply) => {
+        const session = sessions.get(request.IPAddress);
+        if (!session || session?.stage !== "finished") {
+            return reply.redirect("./");
+        }
+
+        switch (session.project.VerificationType) {
+            case "script":
+                return reply.view("script/finished.ejs", {
+                    expire: session.expire,
+                    key: session.license,
+                    discord: session.project.ServerInvite,
+                    name: session.name
+                });
+            case "application":
+                return reply.view("application/finished.ejs", {
+                    expire: session.expire,
+                    discord: session.project.ServerInvite,
+                    name: session.name
+                });
+        }
+    });
+    
+    fastify.get("/v/:token", (request, reply) => {
+        const { token } = request.params;
+        if (!token || !tokens.has(token)) return;
+
+        const data = tokens.get(token);
+
+        console.log(request.url, request.headers.referer);
+
+        if (!request.headers.referer || request.headers.referer !== `${HOSTNAME}/${data.session.name}/stage-1`) {
+            console.log("Failed to set token");
+            return;
+        }
+
+        data.used = true;
+        tokens.set(token, data);
+        reply.send(true);
+    });
+}
+
+module.exports = routes;

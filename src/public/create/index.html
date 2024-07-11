@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://nordcdn.net/ds/css/3.1.1/nord.min.css" integrity="sha384-zz2Vh/uaPtnKKnKq4a8aP/R7ybJEZD3LuwnvmLE+p42C+Zjr2R0Y+PKwdABWc61A" crossorigin="anonymous" />
+    <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
+    <link rel="icon" type="image/x-icon" href="./assets/logo.png">
+    <title>LinkGuard - Keep Your Monitization Links Protected</title>
+    <meta name="description" content="Reward your users easily and earn from links securely using linkguard.cc, supporting over 100 publishers including linkvertise and lootlabs, while also detecting bypass.city & others.">
+    <meta property="og:image" content="https://i.imgur.com/OvdXF10.png" />
+    <meta property="twitter:image" content="https://i.imgur.com/OvdXF10.png" />
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+</head>
+<body>
+    <style>
+        body {
+            background: var(--n-color-surface);
+            margin: 0;
+        }
+
+        #info {
+            width: 65%;
+        }
+
+        nord-stack {
+            width: 50%;
+        }
+    </style>
+    
+    <style>
+        @media screen and (max-width: 600px) {
+            nord-stack, #info {
+                width: 80%;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+    
+    <nord-header>
+        <h1 class="n-typescale-l">LinkGuard</h1>
+        <img src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto,h_50/d4ecdjm7nxkd45iib96y" alt="" srcset="">
+        <nord-button href="https://docs.linkguard.cc" slot="end"><nord-icon name="interface-content-book" slot="end"></nord-icon>Documentation</nord-button>
+        <nord-button href="/" slot="end">
+          <nord-icon slot="end" name="interface-home"></nord-icon>
+          Home
+        </nord-button>
+    </nord-header>
+
+    <nord-empty-state class="n-gap-m" >
+        <div id="stageone">
+            <h2>Create Project [1/2]</h2>
+        
+            <div style="gap: 20px; display: grid;">
+                <nord-range label="Redeem Cooldown" id="redeemcooldown" value="1" min="1" hint="- Hours before users can redeem another" max="72" required></nord-range>                
+
+                <nord-select label="Verification Type" id="ptype" value="script" hint="- Choose how to verify completed links" required>
+                    <option value="script">License Key</option>
+                    <option value="application">IP / Discord ID</option>
+                </nord-select>
+
+                <nord-input label="Project Name" id="pname" type="text" placeholder="Name" hint="- https://linkguard.cc/:name/" oninput="ProjectInput()" required>
+                    <nord-icon slot="start" name="interface-content-book"></nord-icon>
+                </nord-input>
+    
+                <nord-input label="Discord Webhook" id="awebhook" type="url" placeholder="URL" hint="- Log successful & failed attempts" required>
+                    <nord-icon slot="start" name="interface-globe"></nord-icon>
+                </nord-input>
+
+                <nord-input label="Server ID" id="serverid" type="text" placeholder="ID" hint="- Discord Server ID" required>
+                    <nord-icon slot="start" name="interface-email"></nord-icon>
+                </nord-input>
+
+                <nord-input label="Server Invite" id="serverinvite" type="url" placeholder="URL"  hint="- Permanent Discord Invite" required>
+                    <nord-icon slot="start" name="interface-globe"></nord-icon>
+                </nord-input>
+
+            </div>
+            
+            <nord-button variant="primary" style="margin-top: 15px;" onclick="Start()">Continue</nord-button>
+        </div>
+
+        <div id="stagetwo" style="display: none;">
+            <h2>Create Project [2/2]</h2>
+        
+            <div style="gap: 20px; display: grid; margin-bottom: 10px;">
+                <nord-input label="Ad-Link #1" type="url" id="adone" placeholder="URL" hint="- Point to https://linkguard.cc/:name/stage-1" required>
+                    <nord-icon slot="start" name="interface-globe"></nord-icon>
+                </nord-input>
+    
+                <nord-input label="Ad-Link #2" type="url" id="adtwo" placeholder="URL" hint="- Point to https://linkguard.cc/:name/stage-2" required>
+                    <nord-icon slot="start" name="interface-globe"></nord-icon>
+                </nord-input>
+            </div>
+            
+            <div class="h-captcha" data-sitekey="e1321900-084a-4942-90ec-09b84dba4dfc" data-callback="captchaCallback" data-theme="dark"></div>
+
+            <nord-stack justify-content="center" gap="m" direction="horizontal" class="n-margin-l">
+                <nord-button onclick="Back()">Back</nord-button>
+                <nord-button variant="primary" onclick="Create()">Create</nord-button>
+            </nord-stack>
+        </div>
+
+        <div id="successful" style="display: none;">
+            <h2>Project Created!</h2>
+            <nord-input label="API Key" id="apikey" type="text" disabled="true" hint="- Keep this somewhere safe" style="margin-bottom: 15px;">
+                <nord-icon slot="start" name="interface-password"></nord-icon>
+            </nord-input>
+
+            <nord-button variant="primary" onclick="Login()">Login to Dashboard</nord-button>
+        </div>
+    </nord-empty-state>  
+
+    <script>
+        let hresponse;
+        function captchaCallback(response) {
+            hresponse = response;
+        }
+
+        function IsVisible(element) {
+            return element.style.display !== "none";
+        }
+
+        const RedeemCooldown = document.getElementById("redeemcooldown");
+        const ProjectType = document.getElementById("ptype");
+        const NameInput = document.getElementById("pname");
+        const WebhookInput = document.getElementById("awebhook");
+        const LinkOne = document.getElementById("adone");
+        const LinkTwo = document.getElementById("adtwo");
+        const ServerID = document.getElementById("serverid");
+        const ServerInvite = document.getElementById("serverinvite");
+
+        const APIKeyResult = document.getElementById("apikey");
+        const PromtStart = document.getElementById("stageone");
+        const PromtEnd = document.getElementById("stagetwo");
+        const CreatedPromt = document.getElementById("successful");
+
+        function Back() {
+            if (!IsVisible(PromtEnd)) return;
+
+            PromtEnd.style.display = "none";
+            PromtStart.style.display = "";
+        }
+
+        async function Start() {
+            if (!NameInput.value.length || !WebhookInput.value.length || !ServerInvite.value.length) {
+                return;
+            }
+
+            if (NameInput.value.length < 1 || NameInput.value.length > 20) {
+                return alert("Project name must be between 1-20 characters");
+            }
+
+            if (ProjectType.value !== "script" && ProjectType.value !== "application") {
+                return alert("You must specify the project type");
+            }
+
+            if (IsVisible(ServerID) && !ServerID.value.length) {
+                return alert("You must specify the Server ID");
+            }
+
+            const packet = await fetch("http://127.0.0.1:8080/v1/validate/project", {
+                method: "POST",
+                headers: {
+                    ["content-type"]: "application/json"
+                },
+                body: JSON.stringify({
+                    Name: NameInput.value,
+                    Webhook: WebhookInput.value,
+                    ServerInvite: ServerInvite.value,
+                    ServerID: ServerID.value,
+                    VerificationType: ProjectType.value,
+                    UserCooldown: RedeemCooldown.value
+                })
+            })
+
+            const body = await packet.json();
+            if (packet.status !== 200) {
+                return alert(body.error);
+            }
+            
+            PromtEnd.style.display = "";
+            PromtStart.style.display = "none";
+
+            LinkOne.hint = `- Point to https://linkguard.cc/${NameInput.value}/stage-1`;
+            LinkTwo.hint = `- Point to https://linkguard.cc/${NameInput.value}/stage-2`;   
+        }
+
+        async function Create() {
+            if (!LinkOne.value.length || !LinkTwo.value.length || !hresponse) return;
+
+            const packet = await fetch("http://127.0.0.1:8080/v1/project/", {
+                method: "POST",
+                headers: {
+                    ["content-type"]: "application/json",
+                    ["lg_access_token"]: hresponse
+                },
+                body: JSON.stringify({
+                    Name: NameInput.value,
+                    Webhook: WebhookInput.value,
+                    ServerInvite: ServerInvite.value,
+                    ServerID: ServerID.value,
+                    VerificationType: ProjectType.value,
+                    UserCooldown: RedeemCooldown.value,
+                    LinkOne: LinkOne.value,
+                    LinkTwo: LinkTwo.value,
+                    Enabled: true
+                })
+            });
+            
+            const body = await packet.json();
+            if (packet.status !== 200) {
+                return alert(body.error);
+            }
+
+            APIKeyResult.value = body.APIKey;
+            CreatedPromt.style.display = "";
+            PromtEnd.style.display = "none";
+            PromtStart.style.display = "none";
+        }
+
+        function ProjectInput() {
+            NameInput.hint = `- https://linkguard.cc/${NameInput.value}/`;
+        }
+
+        let ikthisisneeded = false;
+        function Login() {
+            if (!ikthisisneeded) {
+                ikthisisneeded = true;
+                alert("Your API-Key cannot be recovered, make sure you write it down");
+                return;
+            }
+
+            window.location = `/${NameInput.value}/dashboard/`;
+        }
+    </script>
+</body>
+</html>

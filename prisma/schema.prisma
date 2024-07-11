@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id               String  @id @default(auto()) @map("_id") @db.ObjectId
+  Type             String  @default("free")
+  VerificationType String
+  Name             String  @unique // Name / ID
+  Webhook          String
+  ServerInvite     String
+  ServerID         String
+  LinkOne          String
+  LinkTwo          String
+  UserCooldown     Int
+  APIKey           String
+  Enabled          Boolean @default(true)
+  CompletedLinks   Int     @default(0)
+  FailedLinks      Int     @default(0)
+}
+
+model User {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  Type           String   @default("free") // free, admin, paid
+  DiscordID      String   @unique
+  CompletedLinks Int      @default(0)
+  FailedLinks    Int      @default(0)
+  Blacklisted    Boolean  @default(false)
+  IPs            String[]
+}

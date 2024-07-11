@@ -50,31 +50,22 @@
     <nord-header>
         <h1 class="n-typescale-l">LinkGuard</h1>
         <img src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto,h_50/d4ecdjm7nxkd45iib96y" alt="" srcset="">
-        <nord-button href="./" slot="end"><nord-icon name="interface-home" slot="end"></nord-icon>Home</nord-button>
+        <nord-button href="https://status.linkguard.cc" slot="end"><nord-icon name="arrow-up-down-long" slot="end"></nord-icon>Server Status</nord-button>
     </nord-header>
 
     <nord-empty-state class="n-gap-m">
-        <h2 style="padding-bottom: 13px;">Redeem your content</h2>
-        <nord-stack justify-content="center" direction="vertical">
-            <nord-card>
-                <h2 slot="header"><nord-icon name="interface-face-id" slot="start"></nord-icon>  Login using Discord</h2>
-                We require all users to authenticate using Discord, we do this to prevent fraudulent actors from bypassing the reward system and affecting publisher monetisation  
-            </nord-card>
-            <div style="text-align: center;"><nord-icon name="arrow-down-long" slot="start"></nord-icon></div>
-            <nord-card>
-                <h2 slot="header"><nord-icon name="interface-link" slot="start"></nord-icon>  Complete the advertisement links</h2>
-                In order to redeem your content you'll have to complete three advertisement links. For those who try to bypass the links you will fail and could be subject to a permanent blacklist from this content
-            </nord-card>
-            <div style="text-align: center;"><nord-icon name="arrow-down-long" class=""></nord-icon></div>
-            <nord-card>
-                <h2 slot="header"><nord-icon name="interface-star-filled"></nord-icon>  Enjoy your content!</h2>
-                It really is that simple, enjoy your content, and redeem more if you like after your cooldown has expired
-            </nord-card>
-        </nord-stack>
+        <h2>Enjoy your Content 🎉</h2>
+        <p>You have successfully completed the advertisement links, you can now return back to the application</p>
+        <nord-input label="Expires" id="expires" value="" disabled="true" style="padding-bottom: 10px;">
+            <nord-icon slot="start" name="user-delete"></nord-icon>
+        </nord-input>
+        <nord-button href="<%=discord%>">Discord</nord-button>
 
-        <nord-stack justify-content="center" gap="s" direction="horizontal" class="n-margin-l">
-            <nord-button variant="primary" onclick="startTrial()">Redeem</nord-button>
-        </nord-stack>
     </nord-empty-state>
+
+    <script>
+        let expire = new Date(Number("<%=expire%>"));
+        document.getElementById("expires").value = `${expire.getDate()}/${expire.getMonth()} ${expire.getHours()}:${expire.getMinutes()}`;
+    </script>
 </body>
 </html>

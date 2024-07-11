@@ -24,13 +24,12 @@
     </nord-header>
 
     <nord-empty-state>
-        <h2>Stage <%=stage%>/3</h2>
-        <p>We're redirecting you to your next link, hold on tight!</p>
-        <nord-progress-bar value="<%=progress%>"></nord-progress-bar>
+        <h2>You cannot redeem this</h2>
+        <p>Unfortunately you cannot redeem this content as it requires you to be in their discord, you can join and try again</p>
+        <nord-stack justify-content="center" direction="horizontal">
+            <nord-button href="./">Go Back</nord-button>
+            <nord-button variant="primary" href="<%=discord%>">Join Discord</nord-button>
+        </nord-stack>
     </nord-empty-state>
-
-    <script>
-        <%-script%>
-    </script>
 </body>
 </html>

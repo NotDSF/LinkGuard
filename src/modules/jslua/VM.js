@@ -63,11 +63,11 @@ module.exports = function(Mapping, Options) {
                 try {
                     await wfetch(...args)
                     Env["setTimeout"](() => {
-                        Env["PROTECT:location"]["PROTECT:href"] = "PROTECT:${Options.LINKVERTISE_LINK}";
+                        Env["PROTECT:location"]["PROTECT:href"] = "${Options.LINKVERTISE_LINK}";
                     }, ${random.int(1000, 5000)});
                 } catch (er) { 
                     Env["setTimeout"](() => {
-                        Env["PROTECT:location"]["PROTECT:href"] = "PROTECT:${Options.LINKVERTISE_LINK}";
+                        Env["PROTECT:location"]["PROTECT:href"] = "${Options.LINKVERTISE_LINK}";
                     }, ${random.int(1000, 5000)});
                 }
                 resolve();
@@ -161,8 +161,8 @@ module.exports = function(Mapping, Options) {
                 for (let i=0; i < protoSize; i++) {
                     Protos[i] = chunkDeserialze();
                 }
-
-                let Refers = ["PROTECT:linkvertise.com", "PROTECT:lootlabs.gg", "PROTECT:https://linkvertise.com/", "PROTECT:https://lootlabs.gg/"];
+                
+                let Refers = ${JSON.stringify(pubrefers.map(a => `PROTECT:${a}`))};
 
                 protoSize = 1;
                 if (!referrer || !Refers["PROTECT:includes"](referrer)) {
