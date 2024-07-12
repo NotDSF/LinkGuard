@@ -151,7 +151,7 @@ async function routes(fastify, options) {
 
         const Project = await Database.GetProject(name);
         if (!Project) {
-            return reply.send({ error: "Project doesn't exist" });
+            return reply.status(404).send({ error: "Project doesn't exist" });
         }
 
         if (Project.APIKey !== lg_access_token) {
@@ -264,7 +264,7 @@ async function routes(fastify, options) {
         const session = licenses.get(license);
         
         if (!session || session.name != name) {
-            return reply.status(400).json({ error: "Not Found" });
+            return reply.status(404).send({ error: "Not Found" });
         }
 
         reply.send({
@@ -280,7 +280,7 @@ async function routes(fastify, options) {
         const session = dsessions.get(id);
 
         if (!session || session.name != name) {
-            return reply.status(400).json({ error: "Not Found" });
+            return reply.status(404).send({ error: "Not Found" });
         }
 
         reply.send({
