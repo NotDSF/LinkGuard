@@ -259,11 +259,11 @@ async function routes(fastify, options) {
     });
 
     // License Validation
-    fastify.get("/project/licenses/:license", (request, reply) => {
-        const { license } = request.params;
+    fastify.get("/project/:name/licenses/:license", (request, reply) => {
+        const { license, name } = request.params;
         const session = licenses.get(license);
         
-        if (!session) {
+        if (!session || session.name != name) {
             return reply.status(400).json({ error: "Not Found" });
         }
 
@@ -275,11 +275,11 @@ async function routes(fastify, options) {
     });
 
     // Discord ID Validation
-    fastify.get("/project/discord/:id", (request, reply) => {
-        const { id } = request.params;
+    fastify.get("/project/:name/discord/:id", (request, reply) => {
+        const { id, name } = request.params;
         const session = dsessions.get(id);
 
-        if (!session) {
+        if (!session || session.name != name) {
             return reply.status(400).json({ error: "Not Found" });
         }
 
