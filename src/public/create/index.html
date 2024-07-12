@@ -58,7 +58,7 @@
 
                 <nord-select label="Verification Type" id="ptype" value="script" hint="- Choose how to verify completed links" required>
                     <option value="script">License Key</option>
-                    <option value="application">IP / Discord ID</option>
+                    <option value="application">Discord ID</option>
                 </nord-select>
 
                 <nord-input label="Project Name" id="pname" type="text" placeholder="Name" hint="- https://linkguard.cc/:name/" oninput="ProjectInput()" required>
@@ -149,8 +149,8 @@
                 return;
             }
 
-            if (NameInput.value.length < 1 || NameInput.value.length > 20) {
-                return alert("Project name must be between 1-20 characters");
+            if (NameInput.value.length < 3 || NameInput.value.length > 8) {
+                return alert("Project name must be between 3-8 characters");
             }
 
             if (ProjectType.value !== "script" && ProjectType.value !== "application") {
