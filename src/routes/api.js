@@ -1,6 +1,7 @@
 const { publishers } = require("../../config.json");
 const database = require("../modules/database");
 const Database = new database();
+const WebhookHandler = require("../modules/webhook");
 
 /*
 {
@@ -82,7 +83,7 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Project name cannot include special characters" });
         }
 
-        if (!Webhook.match(/^https:\/\/(canary\.)?discord.com\/api\/webhooks\/\d+\/\w+$/)) {
+        if (!Webhook.match(/^https:\/\/(canary\.)?discord.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
             return reply.status(400).send({ error: "Invalid webhook URL (must be discord.com)" });
         }
 
@@ -125,7 +126,17 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Project already exists" });
         }
 
+        
+
         const Result = await Database.CreateProject(Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType);
+        
+        try {
+            await WebhookHandler.CreatedProject(Name, Result.APIKey);    
+            await WebhookHandler.CreatedProject(Name, Result.APIKey, Webhook); 
+        } catch (er) {
+            console.log(er);
+        }
+
         return reply.send(Result);
     });
 
@@ -148,7 +159,7 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Project name cannot include special characters" });
         }
 
-        if (!Webhook.match(/^https:\/\/(canary\.)?discord.com\/api\/webhooks\/\d+\/\w+$/)) {
+        if (!Webhook.match(/^https:\/\/(canary\.)?discord.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
             return reply.status(400).send({ error: "Invalid webhook URL (must be discord.com)" });
         }
 
@@ -160,16 +171,30 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Invalid server ID" });
         }
 
-        if (!LinkOne.match(new RegExp(`^http?s:\/\/(${publishers.join("|")})\/`))) {
+        if (UserCooldown > 72 || UserCooldown < 0) {
+            return reply.status(400).send({ error: "Invalid cooldown (must be hours)" });
+        }
+
+        const resone = await fetch("https://proxy.xhspkkecfo.workers.dev/", {
+            method: "GET",
+            headers: {
+                "url": LinkOne
+            }
+        }).then(res => res.text())
+
+        const restwo = await fetch("https://proxy.xhspkkecfo.workers.dev/", {
+            method: "GET",
+            headers: {
+                "url": LinkTwo
+            }
+        }).then(res => res.text())
+
+        if (!publishers.includes(resone)) {
             return reply.status(400).send({ error: "Invalid advertisement link #1" });
         }
 
-        if (!LinkTwo.match(new RegExp(`^http?s:\/\/(${publishers.join("|")})\/`))) {
+        if (!publishers.includes(restwo)) {
             return reply.status(400).send({ error: "Invalid advertisement link #2" });
-        }
-
-        if (UserCooldown > 72 || UserCooldown < 0) {
-            return reply.status(400).send({ error: "Invalid cooldown (must be hours)" });
         }
 
         const Existing = await Database.GetProject(Name);
@@ -207,7 +232,7 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Cannot include special characters or spaces in the Project Name" });
         }
 
-        if (!Webhook.match(/^https:\/\/(canary\.)?discord.com\/api\/webhooks\/\d+\/\w+$/)) {
+        if (!Webhook.match(/^https:\/\/(canary\.)?discord.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
             return reply.status(400).send({ error: "Webhook URL is not valid (must be discord.com)" });
         }
 

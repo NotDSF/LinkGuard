@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="https://nordcdn.net/ds/css/3.1.1/nord.min.css" integrity="sha384-zz2Vh/uaPtnKKnKq4a8aP/R7ybJEZD3LuwnvmLE+p42C+Zjr2R0Y+PKwdABWc61A" crossorigin="anonymous" />
     <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
-    <link rel="icon" type="image/x-icon" href="./assets/logo.png">
-    <title>LinkGuard - Keep Your Monitization Links Protected</title>
+    <link rel="icon" type="image/x-icon" href="/assets/logo.png">
+    <title>LinkGuard - Create Project</title>
     <meta name="description" content="Reward your users easily and earn from links securely using linkguard.cc, supporting over 100 publishers including linkvertise and lootlabs, while also detecting bypass.city & others.">
     <meta property="og:image" content="https://i.imgur.com/OvdXF10.png" />
     <meta property="twitter:image" content="https://i.imgur.com/OvdXF10.png" />
@@ -161,7 +161,7 @@
                 return alert("You must specify the Server ID");
             }
 
-            const packet = await fetch("http://127.0.0.1:8080/v1/validate/project", {
+            const packet = await fetch("/v1/validate/project", {
                 method: "POST",
                 headers: {
                     ["content-type"]: "application/json"
@@ -191,7 +191,7 @@
         async function Create() {
             if (!LinkOne.value.length || !LinkTwo.value.length || !hresponse) return;
 
-            const packet = await fetch("http://127.0.0.1:8080/v1/project/", {
+            const packet = await fetch("/v1/project/", {
                 method: "POST",
                 headers: {
                     ["content-type"]: "application/json",
@@ -233,7 +233,7 @@
                 return;
             }
 
-            window.location = `/${NameInput.value}/dashboard/`;
+            window.location = `/${NameInput.value}/dashboard`;
         }
     </script>
 </body>

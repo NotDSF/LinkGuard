@@ -1,12 +1,14 @@
-const dotenv = require("dotenv")
+const { publishers, development_linkvertise, linkvertise, discord } = require("../config.json");
+const dotenv = require("dotenv");
 const DiscordOauth2 = require("discord-oauth2");
-const { publishers } = require("../config.json");
 const fastify = require("fastify")();
 const path = require("path");
 const cors = require("@fastify/cors");
 dotenv.config();
 
 global.HOSTNAME = process.platform === "win32" ? "http://127.0.0.1:8080" : "https://linkguard.cc";
+global.LINKVERTISE = process.platform === "win32" ? development_linkvertise : linkvertise;
+
 global.sessions = new Map();
 global.pubrefers = [];
 
@@ -77,7 +79,7 @@ fastify.get("/discord", (request, reply) => {
 });
 
 // OUR linkvertise callback
-fastify.get("/callback", (request, reply) => {
+fastify.get("/adcallback", (request, reply) => {
     const session = sessions.get(request.IPAddress);
     if (!session || session.stage !== "link-3") {
         return reply.redirect("/");
@@ -86,7 +88,7 @@ fastify.get("/callback", (request, reply) => {
     reply.redirect(`${HOSTNAME}/${session.name}/stage-3`);
 });
 
-fastify.get("/join", (request, reply) => reply.redirect("https://discord.gg/tBvTkz9Mwv"));
+fastify.get("/join", (request, reply) => reply.redirect(discord));
 
 (async () => {
     try {

@@ -1,8 +1,8 @@
-const { linkvertise } = require("../../config.json");
 const { readFileSync } = require("fs");
 const path = require("path");
 const GenerateScript = require("../modules/jslua");
 const DiscordOauth2 = require("discord-oauth2");
+const Webhook = require("../modules/webhook");
 const database = require("../modules/database");
 const Database = new database();
 const tokens = new Map();
@@ -111,6 +111,16 @@ async function routes(fastify, options) {
         if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
             sessions.delete(request.IPAddress);
 
+            try {
+                await Database.IncrementFailed(session.user.DiscordID, 1);
+                await Database.ProjectIncrementFailed(session.name, 1);
+
+                await Webhook.Failed(session.project.Name);
+                await Webhook.Failed(session.project.Name, session.project.Webhook);
+            } catch (er) {
+                console.log(er);
+            }
+
             return reply.redirect("./");
         }
 
@@ -118,6 +128,7 @@ async function routes(fastify, options) {
         session.stage = "link-2";
         session.token = token;
 
+        console.log(session);
         console.time("Generated Loader");
         const script = await GenerateScript(RawScript, {
             Node: false,
@@ -151,6 +162,16 @@ async function routes(fastify, options) {
         if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
             sessions.delete(request.IPAddress);
 
+            try {
+                await Database.IncrementFailed(session.user.DiscordID, 1);
+                await Database.ProjectIncrementFailed(session.name, 1);
+
+                await Webhook.Failed(session.project.Name);
+                await Webhook.Failed(session.project.Name, session.project.Webhook);
+            } catch (er) {
+                console.log(er);
+            }
+
             return reply.redirect("./");
         }
 
@@ -161,7 +182,7 @@ async function routes(fastify, options) {
             name: session.name,
             stage: 2,
             progress: (100 / 3) * 2,
-            script: `setTimeout(() => window.location.href = '${linkvertise}', 4000)`
+            script: `setTimeout(() => window.location.href = '${LINKVERTISE}', 4000)`
         });
     });
 
@@ -177,6 +198,16 @@ async function routes(fastify, options) {
         if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
             sessions.delete(request.IPAddress);
 
+            try {
+                await Database.IncrementFailed(session.user.DiscordID, 1);
+                await Database.ProjectIncrementFailed(session.name, 1);
+
+                await Webhook.Failed(session.project.Name);
+                await Webhook.Failed(session.project.Name, session.project.Webhook);
+            } catch (er) {
+                console.log(er);
+            }
+
             return reply.redirect("./");
         }
 
@@ -184,6 +215,16 @@ async function routes(fastify, options) {
         if (!token || !token?.used) {
             sessions.delete(request.IPAddress);
             tokens.delete(session.token);
+
+            try {
+                await Database.IncrementFailed(session.user.DiscordID, 1);
+                await Database.ProjectIncrementFailed(session.name, 1);
+
+                await Webhook.Failed(session.project.Name);
+                await Webhook.Failed(session.project.Name, session.project.Webhook);
+            } catch (er) {
+                console.log(er);
+            }
 
             return reply.redirect("./");
         }
@@ -200,6 +241,10 @@ async function routes(fastify, options) {
 
         try {
             await Database.IncrementCompleted(session.user.DiscordID, 3);
+            await Database.ProjectIncrementCompleted(session.name, 3);
+
+            await Webhook.Success(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks);
+            await Webhook.Success(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, session.project.Webhook);
         } catch (er) {
             console.log(er);
         }
@@ -246,6 +291,34 @@ async function routes(fastify, options) {
         data.used = true;
         tokens.set(token, data);
         reply.send(true);
+    });
+
+    fastify.get("/dashboard", async (request, reply) => {
+        const { key } = request.query;
+        const { name } = request.params;
+
+        if (!key) {
+            return reply.view("dashboard/login.ejs", { name: name });
+        }
+
+        const Project = await Database.GetProjectFromAPIKey(key);
+        if (Project.APIKey != key) {
+            return reply.view("dashboard/login.ejs", { name: name });
+        }
+
+        return reply.view("dashboard/index.ejs", {
+            name: Project.Name,
+            webhook: Project.Webhook,
+            invite: Project.ServerInvite,
+            serverid: Project.ServerID,
+            linkone: Project.LinkOne,
+            linktwo: Project.LinkTwo,
+            api: Project.APIKey,
+            redeem: Project.UserCooldown,
+            completed: Project.CompletedLinks,
+            failed: Project.FailedLinks,
+            type: Project.VerificationType
+        });
     });
 }
 

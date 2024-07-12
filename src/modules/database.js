@@ -20,6 +20,20 @@ module.exports = class Database {
         });
     }
 
+    async GetProjectFromAPIKey(APIKey) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.project.findUnique({
+                    where: { APIKey }
+                });
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        });
+    }
+
     async CreateProject(Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -117,6 +131,44 @@ module.exports = class Database {
         });
     }
 
+    async ProjectIncrementCompleted(Name, Amount) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.project.update({
+                    where: { Name },
+                    data: {
+                        CompletedLinks: {
+                            increment: Amount
+                        }
+                    }
+                })
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        })
+    }
+
+    async ProjectIncrementFailed(Name, Amount) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.project.update({
+                    where: { Name },
+                    data: {
+                        FailedLinks: {
+                            increment: Amount
+                        }
+                    }
+                })
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        })
+    }
+
     async IncrementCompleted(DiscordID, Amount) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -124,6 +176,25 @@ module.exports = class Database {
                     where: { DiscordID },
                     data: {
                         CompletedLinks: {
+                            increment: Amount
+                        }
+                    }
+                })
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        })
+    }
+
+    async IncrementFailed(DiscordID, Amount) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.user.update({
+                    where: { DiscordID },
+                    data: {
+                        FailedLinks: {
                             increment: Amount
                         }
                     }

@@ -24,7 +24,7 @@ model Project {
   LinkOne          String
   LinkTwo          String
   UserCooldown     Int
-  APIKey           String
+  APIKey           String  @unique
   Enabled          Boolean @default(true)
   CompletedLinks   Int     @default(0)
   FailedLinks      Int     @default(0)
