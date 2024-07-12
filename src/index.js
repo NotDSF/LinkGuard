@@ -90,6 +90,10 @@ fastify.get("/adcallback", (request, reply) => {
 
 fastify.get("/join", (request, reply) => reply.redirect(discord));
 
+setInterval(async () => {
+    await fetch("https://uptime.betterstack.com/api/v1/heartbeat/wQKsM5yd5N9RzpsXSPUdRXuN");
+}, 300000);
+
 (async () => {
     try {
         await fastify.listen({ port: 8080, host: "0.0.0.0" });
