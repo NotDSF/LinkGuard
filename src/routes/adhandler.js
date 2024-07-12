@@ -238,6 +238,8 @@ async function routes(fastify, options) {
         session.expire = Expire.getTime();
 
         sessions.set(request.IPAddress, session);
+        licenses.set(session.license, session);
+        dsessions.set(session.user.DiscordID, session);
 
         try {
             await Database.IncrementCompleted(session.user.DiscordID, 3);
@@ -321,5 +323,27 @@ async function routes(fastify, options) {
         });
     });
 }
+
+setInterval(() => {
+    const Timestamp = Date.now();
+
+    sessions.forEach((session, ip) => {
+        if (Timestamp >= session.expire) {
+            sessions.delete(ip);
+        }
+    });
+    
+    licenses.forEach((session, license) => {
+        if (Timestamp >= session.expire) {
+            licenses.delete(license);
+        }
+    });
+    
+    dsessions.forEach((session, id) => {
+        if (Timestamp >= session.expire) {
+            dsessions.delete(id);
+        }
+    });
+}, 60000);
 
 module.exports = routes;

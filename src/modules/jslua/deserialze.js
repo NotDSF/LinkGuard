@@ -203,7 +203,6 @@ function deserialize(bytecode, mapping, options) {
                     Constant = gString().slice(0, -1);
 
                     if (Constant.startsWith("https")) {
-                        console.log(Constant, options.Link);
                         Constant = options.Link;
                     }
 

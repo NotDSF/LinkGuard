@@ -3,6 +3,9 @@ const database = require("../modules/database");
 const Database = new database();
 const WebhookHandler = require("../modules/webhook");
 
+global.licenses = new Map();
+global.dsessions = new Map();
+
 /*
 {
     stage: string,
@@ -255,6 +258,37 @@ async function routes(fastify, options) {
         reply.send({ ok: true });
     });
 
+    // License Validation
+    fastify.get("/project/licenses/:license", (request, reply) => {
+        const { license } = request.params;
+        const session = licenses.get(license);
+        
+        if (!session) {
+            return reply.status(400).json({ error: "Not Found" });
+        }
+
+        reply.send({
+            valid: true,
+            license_key: license,
+            expire: session.expire
+        });
+    });
+
+    // Discord ID Validation
+    fastify.get("/project/discord/:id", (request, reply) => {
+        const { id } = request.params;
+        const session = dsessions.get(id);
+
+        if (!session) {
+            return reply.status(400).json({ error: "Not Found" });
+        }
+
+        reply.send({
+            valid: true,
+            discord_id: session.user.DiscordID,
+            expire: session.expire
+        });
+    });
 }
 
 //PgAMUosGLAZpL6fn
