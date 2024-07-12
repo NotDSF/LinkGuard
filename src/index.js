@@ -90,6 +90,10 @@ fastify.get("/adcallback", (request, reply) => {
 
 fastify.get("/join", (request, reply) => reply.redirect(discord));
 
+fastify.setNotFoundHandler((request, reply) => {
+    reply.status(404).view("404.ejs");
+});
+
 setInterval(async () => {
     await fetch("https://uptime.betterstack.com/api/v1/heartbeat/wQKsM5yd5N9RzpsXSPUdRXuN");
 }, 300000);
