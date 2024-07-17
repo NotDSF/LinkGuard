@@ -1,53 +1,3 @@
-async function Success(page, id, completed, fails, webhook) {
-  return new Promise(async (resolve) => {
-    try {
-      await fetch(webhook || process.env.SUCCESS_WEBHOOK, {
-        method: "POST",
-        headers: {
-          ["content-type"]: "application/json"
-        },
-        body: JSON.stringify( {
-          "content": null,
-          "embeds": [
-            {
-              "title": "User Successful",
-              "description": "A user has successfully completed your page",
-              "color": 11725183,
-              "fields": [
-                {
-                  "name": "Completed",
-                  "value": completed,
-                  "inline": true
-                },
-                {
-                  "name": "Failed",
-                  "value": fails,
-                  "inline": true
-                },
-                {
-                  "name": "Discord",
-                  "value": `<@${id}>`
-                }
-              ],
-              "author": {
-                "name": `LinkGuard [${page}]`,
-                "url": `https://linkguard.cc/${page}/`,
-                "icon_url": "https://linkguard.cc/assets/logo.png"
-              }
-            }
-          ],
-          "username": "LinkGuard",
-          "avatar_url": "https://linkguard.cc/assets/logo.png",
-          "attachments": []
-        })
-      });
-      resolve();
-    } catch (er) {
-      console.log(er);
-    }
-  });
-}
-
 async function CreatedProject(page, apikey, webhook) {
   return new Promise(async (resolve) => {
     try {
@@ -88,10 +38,10 @@ async function CreatedProject(page, apikey, webhook) {
   });
 }
 
-async function Failed(page, webhook) {
+async function UserFail(page, id, completed, fails, duration, error, webhook) {
   return new Promise(async (resolve) => {
     try {
-      await fetch(webhook || process.env.PROJECT_WEBHOOK, {
+      await fetch(webhook || process.env.SUCCESS_WEBHOOK, {
         method: "POST",
         headers: {
           ["content-type"]: "application/json"
@@ -101,8 +51,18 @@ async function Failed(page, webhook) {
           "embeds": [
             {
               "title": "User Failed",
-              "description": "A user has failed to complete an advertisement link",
+              "description": "We failed to validate an advertisment link",
               "color": 15302527,
+              "fields": [
+                {
+                  "name": ":book: Information",
+                  "value": `<@${id}> (${completed} completions, ${fails} fails)\nDuration: ${duration}s`
+                },
+                {
+                  "name": ":closed_book: Debug Information",
+                  "value": `\`\`\`\n${error}\n\`\`\``
+                }
+              ],
               "author": {
                 "name": `LinkGuard [${page}]`,
                 "url": `https://linkguard.cc/${page}/`,
@@ -122,5 +82,88 @@ async function Failed(page, webhook) {
   });
 }
 
+async function LicenseSuccess(page, id, completed, fails, license, duration, webhook) {
+  return new Promise(async (resolve) => {
+    try {
+      await fetch(webhook || process.env.SUCCESS_WEBHOOK, {
+        method: "POST",
+        headers: {
+          ["content-type"]: "application/json"
+        },
+        body: JSON.stringify({
+          "content": null,
+          "embeds": [
+            {
+              "title": "User Success",
+              "description": "Your content has been redeemed!",
+              "color": 11725183,
+              "fields": [
+                {
+                  "name": ":book: Information",
+                  "value": `<@${id}> (${completed} completions, ${fails} fails)\nDuration: ${duration}s`
+                },
+                {
+                  "name": "License Key",
+                  "value": `\`\`\`${license}\`\`\``
+                }
+              ],
+              "author": {
+                "name": `LinkGuard [${page}]`,
+                "url": `https://linkguard.cc/${page}/`,
+                "icon_url": "https://linkguard.cc/assets/logo.png"
+              }
+            }
+          ],
+          "username": "LinkGuard",
+          "avatar_url": "https://linkguard.cc/assets/logo.png",
+          "attachments": []
+        })
+      });
+      resolve();
+    } catch (er) {
+      console.log(er);
+    }
+  });
+}
 
-module.exports = { Success, CreatedProject, Failed }
+async function ApplicationSuccess(page, id, completed, fails, duration, webhook) {
+  return new Promise(async (resolve) => {
+    try {
+      await fetch(webhook || process.env.SUCCESS_WEBHOOK, {
+        method: "POST",
+        headers: {
+          ["content-type"]: "application/json"
+        },
+        body: JSON.stringify({
+          "content": null,
+          "embeds": [
+            {
+              "title": "User Success",
+              "description": "Your content has been redeemed!",
+              "color": 11725183,
+              "fields": [
+                {
+                  "name": ":book: Information",
+                  "value": `<@${id}> (${completed} completions, ${fails} fails)\nDuration: ${duration}s`
+                }
+              ],
+              "author": {
+                "name": `LinkGuard [${page}]`,
+                "url": `https://linkguard.cc/${page}/`,
+                "icon_url": "https://linkguard.cc/assets/logo.png"
+              }
+            }
+          ],
+          "username": "LinkGuard",
+          "avatar_url": "https://linkguard.cc/assets/logo.png",
+          "attachments": []
+        })
+      });
+      resolve();
+    } catch (er) {
+      console.log(er);
+    }
+  });
+}
+
+module.exports = { LicenseSuccess, CreatedProject, UserFail, ApplicationSuccess }
