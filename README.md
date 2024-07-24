@@ -1,6 +1,8 @@
 # LinkGuard
 Reward your users easily for completing advertisement links while also preventing against bypass.city & others
 
+![](https://linkguard.cc/assets/Diagram.png)
+
 ## Supported Publishers
 - [Linkvertise](https://linkvertise.com)
 - [LootLabs](https://lootlabs.gg)
