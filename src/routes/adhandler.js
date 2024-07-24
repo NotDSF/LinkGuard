@@ -15,16 +15,6 @@ const oauth = new DiscordOauth2({
 
 let RawScript = readFileSync(path.join(__dirname, "luac.out"), "binary");
 
-/*
-{
-    stage: string,
-    complete: boolean,
-    name: string,
-    ip: string,
-
-}
-*/
-
 /**
  * @param {import("fastify").FastifyInstance} fastify  Encapsulated Fastify Instance
  * @param {Object} options plugin options, refer to https://www.fastify.io/docs/latest/Reference/Plugins/#plugin-options
@@ -107,8 +97,6 @@ async function routes(fastify, options) {
             return reply.redirect("./");
         }
 
-        console.log(request.url, request.headers.referer);
-
         if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
             sessions.delete(request.IPAddress);
 
@@ -129,7 +117,6 @@ async function routes(fastify, options) {
         session.stage = "link-2";
         session.token = token;
 
-        console.log(session);
         console.time("Generated Loader");
         const script = await GenerateScript(RawScript, {
             Node: false,
@@ -157,8 +144,6 @@ async function routes(fastify, options) {
         if (!session || session.stage !== "link-2") {
             return reply.redirect("./");
         }
-
-        console.log(request.url, request.headers.referer);
 
         if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
             sessions.delete(request.IPAddress);
@@ -193,8 +178,6 @@ async function routes(fastify, options) {
         if (!session || session.stage !== "link-3") {
             return reply.redirect("./");
         }
-
-        console.log(request.url, request.headers.referer);
 
         if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
             sessions.delete(request.IPAddress);
@@ -293,10 +276,8 @@ async function routes(fastify, options) {
 
         const data = tokens.get(token);
 
-        console.log(request.url, request.headers.referer);
-
         if (!request.headers.referer || request.headers.referer !== `${HOSTNAME}/${data.session.name}/stage-1`) {
-            console.log("Failed to set token");
+            console.log("Token Validation Failed", request.headers.referer, data, token);
             return;
         }
 

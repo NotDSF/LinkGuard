@@ -52,7 +52,15 @@ fastify.register(require("@fastify/websocket"), {
     }
 });
 
-fastify.get("/discord", (request, reply) => {
+const DiscordSchema = {
+    type: "object",
+    properties: {
+        code: { type: "string" },
+    },
+    required: ["code"]
+}
+
+fastify.get("/discord", { schema: { querystring: DiscordSchema } }, (request, reply) => {
     const { code } = request.query;
     const session = sessions.get(request.IPAddress);
 
@@ -94,14 +102,16 @@ fastify.setNotFoundHandler((request, reply) => {
     reply.status(404).view("404.ejs");
 });
 
-setInterval(async () => {
-    await fetch("https://uptime.betterstack.com/api/v1/heartbeat/wQKsM5yd5N9RzpsXSPUdRXuN");
-}, 300000);
-
 (async () => {
     try {
         await fastify.listen({ port: 8080, host: "0.0.0.0" });
-        console.log("Server now listenting to port 8008!");
+        await fetch(process.env.UPTIME_URL);
+
+        setInterval(async () => {
+            await fetch(process.env.UPTIME_URL);
+        }, 300000);
+
+        console.log("Server now listenting to port 8080!");
     } catch (er) {
         console.log(er);
     }

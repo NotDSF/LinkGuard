@@ -6,16 +6,6 @@ const WebhookHandler = require("../modules/webhook");
 global.licenses = new Map();
 global.dsessions = new Map();
 
-/*
-{
-    stage: string,
-    complete: boolean,
-    name: string,
-    ip: string,
-
-}
-*/
-
 const ProjectSchema = {
     type: "object",
     properties: {
@@ -51,6 +41,32 @@ const AuthorizationHeader = {
         lg_access_token: { type: "string" }
     },
     required: ["lg_access_token"]
+}
+
+const ProjectNameParam = {
+    type: "object",
+    properties: {
+        name: { type: "string" }
+    },
+    required: ["name"]
+}
+
+const LicenseValidation = {
+    type: "object",
+    properties: {
+        name: { type: "string" },
+        license: { type: "string" }
+    },
+    required: ["name", "license"]
+}
+
+const DiscordValidation = {
+    type: "object",
+    properties: {
+        name: { type: "string" },
+        id: { type: "string" }
+    },
+    required: ["name", "id"]
 }
 
 /**
@@ -144,7 +160,7 @@ async function routes(fastify, options) {
     });
 
     // Update Project
-    fastify.put("/project/:name", { schema: { body: ProjectSchema, headers: AuthorizationHeader } }, async (request, reply) => {
+    fastify.put("/project/:name", { schema: { body: ProjectSchema, headers: AuthorizationHeader, params: ProjectNameParam } }, async (request, reply) => {
         const { name } = request.params;
         const { lg_access_token } = request.headers;
         const { Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType, Enabled } = request.body;
@@ -210,7 +226,7 @@ async function routes(fastify, options) {
     });
 
     // Get Project
-    fastify.get("/project/:name", { schema: { headers: AuthorizationHeader } }, async (request, reply) => {
+    fastify.get("/project/:name", { schema: { headers: AuthorizationHeader, params: ProjectNameParam } }, async (request, reply) => {
         const { name } = request.params;
         const { lg_access_token } = request.headers;
 
@@ -259,7 +275,7 @@ async function routes(fastify, options) {
     });
 
     // License Validation
-    fastify.get("/project/:name/licenses/:license", (request, reply) => {
+    fastify.get("/project/:name/licenses/:license", { schema: { params: LicenseValidation } }, (request, reply) => {
         const { license, name } = request.params;
         const session = licenses.get(license);
         
@@ -275,7 +291,7 @@ async function routes(fastify, options) {
     });
 
     // Discord ID Validation
-    fastify.get("/project/:name/discord/:id", (request, reply) => {
+    fastify.get("/project/:name/discord/:id", { schema: { params: DiscordValidation } }, (request, reply) => {
         const { id, name } = request.params;
         const session = dsessions.get(id);
 
@@ -290,7 +306,5 @@ async function routes(fastify, options) {
         });
     });
 }
-
-//PgAMUosGLAZpL6fn
 
 module.exports = routes;
