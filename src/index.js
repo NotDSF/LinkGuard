@@ -1,7 +1,7 @@
 const { publishers, development_linkvertise, linkvertise, discord } = require("../config.json");
 const dotenv = require("dotenv");
 const DiscordOauth2 = require("discord-oauth2");
-const crypto = require("crypto")
+const crypto = require("crypto");
 const fastify = require("fastify")();
 const path = require("path");
 const cors = require("@fastify/cors");
@@ -30,7 +30,7 @@ fastify.register(cors);
 
 fastify.addHook("preHandler", (request, reply, done) => {
     const ipAddress = request.headers["cf-connecting-ip"] || request.ip;
-    request.IPAddress = crypto.createHash('sha256').update(ipAddress).digest('hex');
+    request.IPAddress = crypto.createHash("sha256").update(ipAddress).digest("hex");
     done();
 });
 
@@ -46,12 +46,6 @@ fastify.register(require("@fastify/view"), {
 
 fastify.register(require("@fastify/static"), {
     root: path.join(__dirname, "public")
-})
-
-fastify.register(require("@fastify/websocket"), {
-    options: {
-        maxPayload: 1048576
-    }
 });
 
 fastify.get("/discord", (request, reply) => {
