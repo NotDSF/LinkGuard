@@ -1,5 +1,6 @@
 const { readFileSync } = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 const GenerateScript = require("../modules/jslua");
 const DiscordOauth2 = require("discord-oauth2");
 const Webhook = require("../modules/webhook");
@@ -85,7 +86,7 @@ async function routes(fastify, options) {
         if (!User) {
             User = await Database.CreateUser(duser.id);
         }
-
+        
         let HashedIP = crypto.createHash("sha256").update(request.IPAddress).digest("hex");
         if (!User.IPs.find(ip => ip == HashedIP)) {
             await Database.AddKnownIPAddress(User.DiscordID, HashedIP);
