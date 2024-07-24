@@ -2,10 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 module.exports = class Database {
-    constructor() {
-        
-    }
-
     async GetProject(Name) {
         return new Promise(async (resolve, reject) => {
             try {
