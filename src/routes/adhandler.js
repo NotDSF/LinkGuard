@@ -13,7 +13,14 @@ const oauth = new DiscordOauth2({
     redirectUri: `${HOSTNAME}/discord`
 });
 
-let RawScript = readFileSync(path.join(__dirname, "luac.out"), "binary");
+const RawScript = readFileSync(path.join(__dirname, "luac.out"), "binary");
+const DiscordSchema = {
+    type: "object",
+    properties: {
+        code: { type: "string" },
+    },
+    required: ["code"]
+}
 
 /**
  * @param {import("fastify").FastifyInstance} fastify  Encapsulated Fastify Instance
@@ -50,7 +57,7 @@ async function routes(fastify, options) {
     });
 
     // Redirects to #1 Link
-    fastify.get("/discord", async (request, reply) => {
+    fastify.get("/discord", { schema: { querystring: DiscordSchema } }, async (request, reply) => {
         const { code } = request.query;
         const session = sessions.get(request.IPAddress);
 

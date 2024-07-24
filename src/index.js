@@ -52,15 +52,7 @@ fastify.register(require("@fastify/websocket"), {
     }
 });
 
-const DiscordSchema = {
-    type: "object",
-    properties: {
-        code: { type: "string" },
-    },
-    required: ["code"]
-}
-
-fastify.get("/discord", { schema: { querystring: DiscordSchema } }, (request, reply) => {
+fastify.get("/discord", (request, reply) => {
     const { code } = request.query;
     const session = sessions.get(request.IPAddress);
 
