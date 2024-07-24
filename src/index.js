@@ -29,8 +29,7 @@ global.sessions = new Map();
 fastify.register(cors);
 
 fastify.addHook("preHandler", (request, reply, done) => {
-    const ipAddress = request.headers["cf-connecting-ip"] || request.ip;
-    request.IPAddress = crypto.createHash("sha256").update(ipAddress).digest("hex");
+    request.IPAddress = request.headers["cf-connecting-ip"] || request.ip;
     done();
 });
 

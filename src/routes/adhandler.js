@@ -86,8 +86,9 @@ async function routes(fastify, options) {
             User = await Database.CreateUser(duser.id);
         }
 
-        if (!User.IPs.find(ip => ip == request.IPAddress)) {
-            await Database.AddKnownIPAddress(User.DiscordID, request.IPAddress);
+        let HashedIP = crypto.createHash("sha256").update(request.IPAddress).digest("hex");
+        if (!User.IPs.find(ip => ip == HashedIP)) {
+            await Database.AddKnownIPAddress(User.DiscordID, HashedIP);
         }
 
         session.stage = "link-1";
