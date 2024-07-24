@@ -142,7 +142,7 @@ async function routes(fastify, options) {
         return reply.view("stage.ejs", {
             name: session.name,
             stage: 1,
-            progress: (100 / 3) * 1,
+            progress: 50,
             script
         });
     });
@@ -151,40 +151,6 @@ async function routes(fastify, options) {
     fastify.get("/stage-2", async (request, reply) => {
         const session = sessions.get(request.IPAddress);
         if (!session || session.stage !== "link-2") {
-            return reply.redirect("./");
-        }
-
-        if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
-            sessions.delete(request.IPAddress);
-
-            try {
-                await Database.IncrementFailed(session.user.DiscordID, 1);
-                await Database.ProjectIncrementFailed(session.name, 1);
-
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x2 = Invalid Request");
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x2 = Invalid Request", session.project.Webhook);
-            } catch (er) {
-                console.log(er);
-            }
-
-            return reply.redirect("./");
-        }
-
-        session.stage = "link-3";
-        sessions.set(request.IPAddress, session);
-
-        return reply.view("stage.ejs", {
-            name: session.name,
-            stage: 2,
-            progress: (100 / 3) * 2,
-            script: `setTimeout(() => window.location.href = '${LINKVERTISE}', 4000)`
-        });
-    });
-
-    // Redirects to /finished
-    fastify.get("/stage-3", async (request, reply) => {
-        const session = sessions.get(request.IPAddress);
-        if (!session || session.stage !== "link-3") {
             return reply.redirect("./");
         }
 

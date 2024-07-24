@@ -1,4 +1,4 @@
-const { publishers, development_linkvertise, linkvertise, discord } = require("../config.json");
+const { publishers, discord } = require("../config.json");
 const dotenv = require("dotenv");
 const DiscordOauth2 = require("discord-oauth2");
 const fastify = require("fastify")();
@@ -7,7 +7,6 @@ const cors = require("@fastify/cors");
 dotenv.config();
 
 global.HOSTNAME = process.platform === "win32" ? "http://127.0.0.1:8080" : "https://linkguard.cc";
-global.LINKVERTISE = process.platform === "win32" ? development_linkvertise : linkvertise;
 
 global.sessions = new Map();
 global.pubrefers = [];
