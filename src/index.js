@@ -38,7 +38,7 @@ fastify.register(require("@fastify/view"), {
     engine: {
         ejs: require("ejs")
     },
-    root: path.join(__dirname, "./serve")
+    root: path.join(__dirname, "./ejs")
 });
 
 fastify.register(require("@fastify/static"), {
