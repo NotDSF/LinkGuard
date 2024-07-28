@@ -14,6 +14,8 @@ const oauth = new DiscordOauth2({
     redirectUri: `${HOSTNAME}/discord`
 });
 
+const sha256 = (s) => crypto.createHash("sha256").update(s).digest("hex");
+
 const RawScript = readFileSync(path.join(__dirname, "luac.out"), "binary");
 const DiscordSchema = {
     type: "object",
@@ -87,7 +89,7 @@ async function routes(fastify, options) {
             User = await Database.CreateUser(duser.id);
         }
         
-        let HashedIP = crypto.createHash("sha256").update(request.IPAddress).digest("hex");
+        const HashedIP = sha256(request.IPAddress);
         if (!User.IPs.find(ip => ip == HashedIP)) {
             await Database.AddKnownIPAddress(User.DiscordID, HashedIP);
         }
@@ -269,8 +271,9 @@ async function routes(fastify, options) {
             return reply.view("dashboard/login.ejs", { name: name });
         }
 
-        const Project = await Database.GetProjectFromAPIKey(key);
-        if (Project.APIKey != key) {
+        const hashed = sha256(key);
+        const Project = await Database.GetProjectFromAPIKey(hashed);
+        if (Project?.APIKey != hashed) {
             return reply.view("dashboard/login.ejs", { name: name });
         }
 
@@ -281,7 +284,7 @@ async function routes(fastify, options) {
             serverid: Project.ServerID,
             linkone: Project.LinkOne,
             linktwo: Project.LinkTwo,
-            api: Project.APIKey,
+            api: key,
             redeem: Project.UserCooldown,
             completed: Project.CompletedLinks,
             failed: Project.FailedLinks,

@@ -30,10 +30,9 @@ module.exports = class Database {
         });
     }
 
-    async CreateProject(Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType) {
+    async CreateProject(Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType, APIKey) {
         return new Promise(async (resolve, reject) => {
             try {
-                const APIKey = crypto.randomUUID();
                 const result = await prisma.project.create({
                     data: { 
                         Name, 

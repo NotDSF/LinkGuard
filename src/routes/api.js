@@ -1,7 +1,10 @@
 const { publishers } = require("../../config.json");
 const database = require("../modules/database");
+const crypto = require("crypto");
 const Database = new database();
 const WebhookHandler = require("../modules/webhook");
+
+const sha256 = (s) => crypto.createHash("sha256").update(s).digest("hex");
 
 global.licenses = new Map();
 global.dsessions = new Map();
@@ -102,8 +105,8 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Project name cannot include special characters" });
         }
 
-        if (!Webhook.match(/^https:\/\/(canary\.)?discord.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
-            return reply.status(400).send({ error: "Invalid webhook URL (must be discord.com)" });
+        if (!Webhook.match(/^https:\/\/(canary\.)?discord(app)?.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
+            return reply.status(400).send({ error: "Invalid webhook URL (must be a valid discord URL)" });
         }
 
         if (!ServerInvite.match(/^https:\/\/discord\.(gg)?(com)?\/(invite\/)?\w+$/)) {
@@ -145,17 +148,17 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Project already exists" });
         }
 
-        
-
-        const Result = await Database.CreateProject(Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType);
+        const APIKey = crypto.randomUUID();
+        const Result = await Database.CreateProject(Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType, sha256(APIKey));
         
         try {
-            await WebhookHandler.CreatedProject(Name, Result.APIKey);    
-            await WebhookHandler.CreatedProject(Name, Result.APIKey, Webhook); 
+            await WebhookHandler.CreatedProject(Name, `REDACTED`);    
+            await WebhookHandler.CreatedProject(Name, APIKey, Webhook); 
         } catch (er) {
             console.log(er);
         }
 
+        Result.APIKey = APIKey;
         return reply.send(Result);
     });
 
@@ -170,7 +173,7 @@ async function routes(fastify, options) {
             return reply.status(404).send({ error: "Project doesn't exist" });
         }
 
-        if (Project.APIKey !== lg_access_token) {
+        if (Project.APIKey !== sha256(lg_access_token)) {
             return reply.send({ error: "Authorization required" });
         }
 
@@ -178,7 +181,7 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Project name cannot include special characters" });
         }
 
-        if (!Webhook.match(/^https:\/\/(canary\.)?discord.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
+        if (!Webhook.match(/^https:\/\/(canary\.)?discord(app)?.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
             return reply.status(400).send({ error: "Invalid webhook URL (must be discord.com)" });
         }
 
@@ -235,7 +238,7 @@ async function routes(fastify, options) {
             return reply.send({ error: "Project doesn't exist" });
         }
 
-        if (Project.APIKey !== lg_access_token) {
+        if (Project.APIKey !== sha256(lg_access_token)) {
             return reply.send({ error: "Authorization required" });
         }
 
@@ -251,7 +254,7 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Cannot include special characters or spaces in the Project Name" });
         }
 
-        if (!Webhook.match(/^https:\/\/(canary\.)?discord.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
+        if (!Webhook.match(/^https:\/\/(canary\.)?discord(app)?.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
             return reply.status(400).send({ error: "Webhook URL is not valid (must be discord.com)" });
         }
 
