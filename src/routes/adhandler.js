@@ -113,7 +113,7 @@ async function routes(fastify, options) {
                 await Database.IncrementFailed(session.user.DiscordID, 1);
                 await Database.ProjectIncrementFailed(session.name, 1);
 
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x1 = Invalid Request");
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, `error: 0x1 = Invalid Request\n${request.headers.referer || "none"}`);
                 await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x1 = Invalid Request", session.project.Webhook);
             } catch (er) {
                 console.log(er);
@@ -147,7 +147,7 @@ async function routes(fastify, options) {
         });
     });
 
-    // Redirects to #3 Link (our linkvertise)
+    // Redirects to /finished
     fastify.get("/stage-2", async (request, reply) => {
         const session = sessions.get(request.IPAddress);
         if (!session || session.stage !== "link-2") {
@@ -161,8 +161,8 @@ async function routes(fastify, options) {
                 await Database.IncrementFailed(session.user.DiscordID, 1);
                 await Database.ProjectIncrementFailed(session.name, 1);
 
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x3 = Invalid Request");
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x3 = Invalid Request", session.project.Webhook);
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, `error: 0x2 = Invalid Request\n${request.headers.referer || "none"}`);
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x2 = Invalid Request", session.project.Webhook);
             } catch (er) {
                 console.log(er);
             }
@@ -180,8 +180,8 @@ async function routes(fastify, options) {
                 await Database.ProjectIncrementFailed(session.name, 1);
 
                 
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x4 = Failed to validate");
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x4 = Failed to validate", session.project.Webhook);
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x3 = Failed to validate");
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x3 = Failed to validate", session.project.Webhook);
             } catch (er) {
                 console.log(er);
             }
