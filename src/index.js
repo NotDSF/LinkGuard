@@ -71,21 +71,9 @@ fastify.get("/discord", (request, reply) => {
     reply.redirect("/");
 });
 
-// OUR linkvertise callback
-fastify.get("/adcallback", (request, reply) => {
-    const session = sessions.get(request.IPAddress);
-    if (!session || session.stage !== "link-3") {
-        return reply.redirect("/");
-    }
-
-    reply.redirect(`${HOSTNAME}/${session.name}/stage-3`);
-});
-
 fastify.get("/join", (request, reply) => reply.redirect(discord));
 
-fastify.setNotFoundHandler((request, reply) => {
-    reply.status(404).view("404.ejs");
-});
+fastify.setNotFoundHandler((request, reply) => reply.status(404).view("404.ejs"));
 
 (async () => {
     try {
