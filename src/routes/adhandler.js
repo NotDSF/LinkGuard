@@ -83,7 +83,13 @@ async function routes(fastify, options) {
         }
 
         const duser = await oauth.getUser(response.access_token);
-        
+        if (session.project.Blacklisted.find(id => id === duser.id)) {
+            return reply.view("blacklisted.ejs", {
+                name: session.name,
+                discord: session.project.ServerInvite
+            });
+        }
+
         let User = await Database.GetUser(duser.id);
         if (!User) {
             User = await Database.CreateUser(duser.id);
@@ -115,8 +121,9 @@ async function routes(fastify, options) {
                 await Database.IncrementFailed(session.user.DiscordID, 1);
                 await Database.ProjectIncrementFailed(session.name, 1);
 
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, `error: 0x1 = Invalid Request\n${request.headers.referer || "none"}`);
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x1 = Invalid Request", session.project.Webhook);
+                const duration = (Date.now() - session.creation) / 1000;
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, `error: 0x1 = Invalid Request\n${request.headers.referer || "none"}`, session.project.APIKey);
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, "error: 0x1 = Invalid Request", session.project.APIKey, session.project.Webhook);
             } catch (er) {
                 console.log(er);
             }
@@ -143,8 +150,6 @@ async function routes(fastify, options) {
 
         return reply.view("stage.ejs", {
             name: session.name,
-            stage: 1,
-            progress: 50,
             script
         });
     });
@@ -163,8 +168,9 @@ async function routes(fastify, options) {
                 await Database.IncrementFailed(session.user.DiscordID, 1);
                 await Database.ProjectIncrementFailed(session.name, 1);
 
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, `error: 0x2 = Invalid Request\n${request.headers.referer || "none"}`);
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x2 = Invalid Request", session.project.Webhook);
+                const duration = (Date.now() - session.creation) / 1000;
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, `error: 0x2 = Invalid Request\n${request.headers.referer || "none"}`, session.project.APIKey);
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, "error: 0x2 = Invalid Request", session.project.APIKey, session.project.Webhook);
             } catch (er) {
                 console.log(er);
             }
@@ -181,9 +187,9 @@ async function routes(fastify, options) {
                 await Database.IncrementFailed(session.user.DiscordID, 1);
                 await Database.ProjectIncrementFailed(session.name, 1);
 
-                
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x3 = Failed to validate");
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, "error: 0x3 = Failed to validate", session.project.Webhook);
+                const duration = (Date.now() - session.creation) / 1000;
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, "error: 0x3 = Failed to validate", session.project.APIKey);
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, "error: 0x3 = Failed to validate", session.project.APIKey, session.project.Webhook);
             } catch (er) {
                 console.log(er);
             }
@@ -204,17 +210,18 @@ async function routes(fastify, options) {
         dsessions.set(session.user.DiscordID, session);
 
         try {
-            await Database.IncrementCompleted(session.user.DiscordID, 3);
-            await Database.ProjectIncrementCompleted(session.name, 3);
-
+            await Database.IncrementCompleted(session.user.DiscordID, 2);
+            await Database.ProjectIncrementCompleted(session.name, 2);
+            
+            const duration = (Date.now() - session.creation) / 1000;
             switch (session.project.VerificationType) {
                 case "script":
-                    await Webhook.LicenseSuccess(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, session.license, (Date.now() - session.creation) / 1000)
-                    await Webhook.LicenseSuccess(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, session.license, (Date.now() - session.creation) / 1000, session.project.Webhook)
+                    await Webhook.LicenseSuccess(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, session.license, duration, session.project.APIKey)
+                    await Webhook.LicenseSuccess(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, session.license, duration, session.project.APIKey, session.project.Webhook)
                     break;
                 default:
-                    await Webhook.ApplicationSuccess(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000)
-                    await Webhook.ApplicationSuccess(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, (Date.now() - session.creation) / 1000, session.project.Webhook)
+                    await Webhook.ApplicationSuccess(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, session.project.APIKey)
+                    await Webhook.ApplicationSuccess(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, session.project.APIKey, session.project.Webhook)
                     break;
             }
         } catch (er) {
@@ -230,21 +237,12 @@ async function routes(fastify, options) {
             return reply.redirect("./");
         }
 
-        switch (session.project.VerificationType) {
-            case "script":
-                return reply.view("script/finished.ejs", {
-                    expire: session.expire,
-                    key: session.license,
-                    discord: session.project.ServerInvite,
-                    name: session.name
-                });
-            case "application":
-                return reply.view("application/finished.ejs", {
-                    expire: session.expire,
-                    discord: session.project.ServerInvite,
-                    name: session.name
-                });
-        }
+        return reply.view(`${session.project.VerificationType}/finished.ejs`, {
+            expire: session.expire,
+            key: session.license,
+            discord: session.project.ServerInvite,
+            name: session.name
+        });
     });
     
     fastify.get("/v/:token", (request, reply) => {
@@ -254,8 +252,7 @@ async function routes(fastify, options) {
         const data = tokens.get(token);
 
         if (!request.headers.referer || request.headers.referer !== `${HOSTNAME}/${data.session.name}/stage-1`) {
-            console.log("Token Validation Failed", request.headers.referer, data, token);
-            return;
+            return console.log("Token Validation Failed", request.headers.referer, data, token);
         }
 
         data.used = true;

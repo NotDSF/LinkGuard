@@ -22,16 +22,14 @@
         <img src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto,h_50/d4ecdjm7nxkd45iib96y" alt="" srcset="">
         <nord-button href="./" slot="end"><nord-icon name="interface-home" slot="end"></nord-icon>Home</nord-button>
     </nord-header>
-    
-    <!-- stage progress -->
-    <nord-empty-state>
-        <h2>Stage 1/2</h2>
-        <p>We're redirecting you to your next link, hold on tight!</p>
-        <nord-progress-bar value="50"></nord-progress-bar>
-    </nord-empty-state>
 
-    <script>
-        <%-script%>
-    </script>
+    <nord-empty-state>
+        <h2>You cannot redeem this</h2>
+        <p>Sorry kiddo, you have been blacklisted from this content</p>
+        <nord-stack justify-content="center" direction="horizontal">
+            <nord-button href="./">Go Back</nord-button>
+            <nord-button variant="primary" href="<%=discord%>">Join Discord</nord-button>
+        </nord-stack>
+    </nord-empty-state>
 </body>
 </html>

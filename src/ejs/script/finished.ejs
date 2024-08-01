@@ -68,7 +68,7 @@
 
     <script>
         let expire = new Date(Number("<%=expire%>"));
-        document.getElementById("expires").value = `${expire.getDate()}/${expire.getMonth()} ${expire.getHours()}:${expire.getMinutes()}`;
+        document.getElementById("expires").value = expire.toLocaleString();
     </script>
 </body>
 </html>

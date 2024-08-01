@@ -201,4 +201,21 @@ module.exports = class Database {
             }
         })
     }
+
+    async BlacklistedUpdate(Name, Blacklisted) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.project.update({
+                    where: { Name },
+                    data: {
+                        Blacklisted
+                    }
+                });
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        });
+    }
 }

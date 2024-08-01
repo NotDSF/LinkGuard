@@ -72,6 +72,14 @@ const DiscordValidation = {
     required: ["name", "id"]
 }
 
+const AuthorizationQuery = {
+    type: "object",
+    properties: {
+        lg_access_token: { type: "string" }
+    },
+    required: ["lg_access_token"]
+}
+
 /**
  * @param {import("fastify").FastifyInstance} fastify  Encapsulated Fastify Instance
  * @param {Object} options plugin options, refer to https://www.fastify.io/docs/latest/Reference/Plugins/#plugin-options
@@ -93,12 +101,12 @@ async function routes(fastify, options) {
         });
 
         if (packet.status !== 200) {
-            return reply.send({ error: "Failed to verify captcha" });
+            return reply.status(401).send({ error: "Failed to verify captcha" });
         }
 
         const body = await packet.json();
         if (!body.success) {
-            return reply.send({ error: "Failed to verify captcha" });
+            return reply.status(401).send({ error: "Failed to verify captcha" });
         }
 
         if (Name.match(/[^\w-]/)) {
@@ -170,11 +178,11 @@ async function routes(fastify, options) {
 
         const Project = await Database.GetProject(name);
         if (!Project) {
-            return reply.status(404).send({ error: "Project doesn't exist" });
+            return reply.status(404).send({ error: "Project not found" });
         }
 
         if (Project.APIKey !== sha256(lg_access_token)) {
-            return reply.send({ error: "Authorization required" });
+            return reply.status(401).send({ error: "Authorization required" });
         }
 
         if (Name.match(/[^\w-]/)) {
@@ -235,11 +243,11 @@ async function routes(fastify, options) {
 
         const Project = await Database.GetProject(name);
         if (!Project) {
-            return reply.send({ error: "Project doesn't exist" });
+            return reply.status(404).send({ error: "Project not found" });
         }
 
         if (Project.APIKey !== sha256(lg_access_token)) {
-            return reply.send({ error: "Authorization required" });
+            return reply.status(401).send({ error: "Authorization required" });
         }
 
         delete Project.APIKey;
@@ -283,7 +291,7 @@ async function routes(fastify, options) {
         const session = licenses.get(license);
         
         if (!session || session.name != name) {
-            return reply.status(404).send({ error: "Not Found" });
+            return reply.status(404).send({ error: "License not found" });
         }
 
         reply.send({
@@ -299,13 +307,52 @@ async function routes(fastify, options) {
         const session = dsessions.get(id);
 
         if (!session || session.name != name) {
-            return reply.status(404).send({ error: "Not Found" });
+            return reply.status(404).send({ error: "User not found" });
         }
 
         reply.send({
             valid: true,
             discord_id: session.user.DiscordID,
             expire: session.expire
+        });
+    });
+
+    // Blacklist/Unblacklist User (has to be GET for webhooks/easy accessibility)
+    fastify.get("/project/:name/user/:id", { schema: { params: DiscordValidation, querystring: AuthorizationQuery } }, async (request, reply) => {
+        const { id, name } = request.params;
+        const { lg_access_token } = request.query;
+
+        const Project = await Database.GetProject(name);
+        if (!Project) {
+            return reply.status(404).send({ error: "Project not found" });
+        }
+
+        if (Project.APIKey !== lg_access_token) {
+            return reply.status(401).send({ error: "Authorization required" });
+        }
+
+        const User = await Database.GetUser(id);
+        if (!User) {
+            return reply.status(404).send({ error: "User not found" }); 
+        }
+
+        const Blacklisted = Project.Blacklisted;
+        if (Blacklisted.find(d => d === id)) {
+            Blacklisted.splice(Blacklisted.indexOf(id), 1);
+
+            await Database.BlacklistedUpdate(name, Blacklisted);
+            return reply.send({
+                success: true,
+                message: "User has been unblacklisted"
+            });
+        }
+
+        Blacklisted.push(id);
+        await Database.BlacklistedUpdate(name, Blacklisted);
+
+        reply.send({
+            success: true,
+            message: "User has been blacklisted"
         });
     });
 }

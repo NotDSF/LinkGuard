@@ -38,7 +38,7 @@ async function CreatedProject(page, apikey, webhook) {
   });
 }
 
-async function UserFail(page, id, completed, fails, duration, error, webhook) {
+async function UserFail(page, id, completed, fails, duration, error, apikey, webhook) {
   return new Promise(async (resolve) => {
     try {
       await fetch(webhook || process.env.SUCCESS_WEBHOOK, {
@@ -56,7 +56,7 @@ async function UserFail(page, id, completed, fails, duration, error, webhook) {
               "fields": [
                 {
                   "name": ":book: Information",
-                  "value": `<@${id}> (${completed} completions, ${fails} fails)\nDuration: ${duration}s`
+                  "value": `<@${id}> (${completed} completions, ${fails} fails) [(Blacklist)](https://linkguard.cc/v1/project/${page}/user/${id}?lg_access_token=${apikey})\nDuration: ${duration}s`
                 },
                 {
                   "name": ":closed_book: Debug Information",
@@ -82,7 +82,7 @@ async function UserFail(page, id, completed, fails, duration, error, webhook) {
   });
 }
 
-async function LicenseSuccess(page, id, completed, fails, license, duration, webhook) {
+async function LicenseSuccess(page, id, completed, fails, license, duration, apikey, webhook) {
   return new Promise(async (resolve) => {
     try {
       await fetch(webhook || process.env.SUCCESS_WEBHOOK, {
@@ -100,7 +100,7 @@ async function LicenseSuccess(page, id, completed, fails, license, duration, web
               "fields": [
                 {
                   "name": ":book: Information",
-                  "value": `<@${id}> (${completed} completions, ${fails} fails)\nDuration: ${duration}s`
+                  "value": `<@${id}> (${completed} completions, ${fails} fails) [(Blacklist)](https://linkguard.cc/v1/project/${page}/user/${id}?lg_access_token=${apikey})\nDuration: ${duration}s`
                 },
                 {
                   "name": "License Key",
@@ -126,7 +126,7 @@ async function LicenseSuccess(page, id, completed, fails, license, duration, web
   });
 }
 
-async function ApplicationSuccess(page, id, completed, fails, duration, webhook) {
+async function ApplicationSuccess(page, id, completed, fails, duration, apikey, webhook) {
   return new Promise(async (resolve) => {
     try {
       await fetch(webhook || process.env.SUCCESS_WEBHOOK, {
@@ -144,7 +144,7 @@ async function ApplicationSuccess(page, id, completed, fails, duration, webhook)
               "fields": [
                 {
                   "name": ":book: Information",
-                  "value": `<@${id}> (${completed} completions, ${fails} fails)\nDuration: ${duration}s`
+                  "value": `<@${id}> (${completed} completions, ${fails} fails) [(Blacklist)](https://linkguard.cc/v1/project/${page}/user/${id}?lg_access_token=${apikey})\nDuration: ${duration}s`
                 }
               ],
               "author": {
