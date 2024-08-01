@@ -44,17 +44,23 @@
 
     <nord-empty-state>
         <h2>Managing Project [<%=name%>]</h2>
-        <p>You are currently managing a project, here you update your project information or view your analytics</p>
+        <p>You are currently managing your project, here you update project information and view your analytics</p>
 
-        <nord-stack justify-content="center" direction="horizontal">
-            <nord-card>
-                <h2 slot="header">Completed Links</h2>
+        <nord-stack justify-content="center" direction="horizontal" style="text-align: center;">
+            <div>
+                <h3>Completed Links</h3>
                 <%=completed%>
-            </nord-card>
-            <nord-card>
-                <h2 slot="header">Blocked Attempts</h2>
+            </div>
+            <nord-divider direction="vertical"></nord-divider>
+            <div>
+                <h3>Failed Links</h3>
                 <%=failed%>
-            </nord-card>
+            </div>
+            <nord-divider direction="vertical"></nord-divider>
+            <div>
+                <h3>Blacklisted Users</h3>
+                <%=blacklisted%>
+            </div>
         </nord-stack>
     </nord-empty-state>
 

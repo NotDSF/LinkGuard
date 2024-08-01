@@ -285,7 +285,8 @@ async function routes(fastify, options) {
             redeem: Project.UserCooldown,
             completed: Project.CompletedLinks,
             failed: Project.FailedLinks,
-            type: Project.VerificationType
+            type: Project.VerificationType,
+            blacklisted: Project.Blacklisted.length
         });
     });
 }
