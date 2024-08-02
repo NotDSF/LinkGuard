@@ -1,3 +1,4 @@
+const encoding = require("../../encoding.json");
 const utf8 = require("utf8");
 
 function EncodeObject(obj) {
@@ -10,35 +11,35 @@ function EncodeObject(obj) {
     }
 
     function wInt32(value) {
-        stream.writeUint32LE(value, offset);
+        stream.writeUint32LE(value ^ encoding.int32_xor, offset);
         offset = offset + 4;
     }
 
     function wString(value) {
         wInt32(value.length);
         for (let char of value.split(""))
-            wInt32(char.charCodeAt(0));
+            wInt32(char.charCodeAt(0) ^ encoding.string_xor);
     }
 
     function HandleValue(value) {
         switch (typeof(value)) {
             case "string":
-                wInt32(1); // string header
+                wInt32(encoding.string_header);
                 wString(value);
                 break;
 
             case "number":
-                wInt32(2); // number header
+                wInt32(encoding.number_header);
                 wInt32(value);
                 break;
 
             case "boolean":
-                wInt32(3);
+                wInt32(encoding.boolean_header);
                 wByte(value ? 1 : 0);
                 break;
 
             case "object":
-                wInt32(4);
+                wInt32(encoding.object_header);
                 WriteObject(value);
                 break;
         }
@@ -53,7 +54,7 @@ function EncodeObject(obj) {
     }
 
     WriteObject(obj);
-    return stream.toString().split("").map(c => `${utf8.encode(c).charCodeAt(0)}`).join("x");
+    return stream.slice(0, offset).toString().split("").map(c => `${utf8.encode(c).charCodeAt(0)}`).join("x");
 }
 
 module.exports = EncodeObject;

@@ -325,16 +325,21 @@ async function routes(fastify, options) {
         
         if (!session || session.name != name) {
             return reply.send(encode({
+                fingerprint: request.IPAddress,
                 valid: false,
-                timestamp: Math.floor(Date.now() / 1000)
+                timestamp: Math.floor(Date.now() / 1000),
+                hub: name,
+                license_key: license
             }));
         }
 
         reply.send(encode({
+            fingerprint: request.IPAddress,
             valid: true,
             license_key: license,
             expire: session.expire,
-            timestamp: Math.floor(Date.now() / 1000)
+            timestamp: Math.floor(Date.now() / 1000),
+            hub: name
         }));
     });
 
