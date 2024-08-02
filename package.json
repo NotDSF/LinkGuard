@@ -20,7 +20,8 @@
     "fastify": "^4.26.2",
     "math-float64-ldexp": "^1.0.1",
     "random": "^3.0.6",
-    "uglify-js": "^3.17.4"
+    "uglify-js": "^3.17.4",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "prisma": "^5.16.2"

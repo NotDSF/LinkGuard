@@ -1,5 +1,6 @@
 const { publishers } = require("../../config.json");
 const database = require("../modules/database");
+const encode = require("../modules/json");
 const crypto = require("crypto");
 const Database = new database();
 const WebhookHandler = require("../modules/webhook");
@@ -315,6 +316,26 @@ async function routes(fastify, options) {
             discord_id: session.user.DiscordID,
             expire: session.expire
         });
+    });
+
+    // License Validation (Roblox)
+    fastify.get("/project/:name/roblox/licenses/:license", { schema: { params: LicenseValidation } }, (request, reply) => {
+        const { license, name } = request.params;
+        const session = licenses.get(license);
+        
+        if (!session || session.name != name) {
+            return reply.send(encode({
+                valid: false,
+                timestamp: Math.floor(Date.now() / 1000)
+            }));
+        }
+
+        reply.send(encode({
+            valid: true,
+            license_key: license,
+            expire: session.expire,
+            timestamp: Math.floor(Date.now() / 1000)
+        }));
     });
 
     // Blacklist/Unblacklist User (has to be GET for webhooks/easy accessibility)

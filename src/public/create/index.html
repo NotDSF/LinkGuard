@@ -55,7 +55,7 @@
         
             <div style="gap: 20px; display: grid;">
                 <nord-range label="Redeem Cooldown" id="redeemcooldown" value="1" min="1" hint="- Hours before users can redeem another" max="72" required></nord-range>                
-
+                
                 <nord-select label="Verification Type" id="ptype" value="script" hint="- Choose how to verify completed links" required>
                     <option value="script">License Key</option>
                     <option value="application">Discord ID</option>
@@ -76,7 +76,6 @@
                 <nord-input label="Server Invite" id="serverinvite" type="url" placeholder="URL"  hint="- Permanent Discord Invite" required>
                     <nord-icon slot="start" name="interface-globe"></nord-icon>
                 </nord-input>
-
             </div>
             
             <nord-button variant="primary" style="margin-top: 15px;" onclick="Start()">Continue</nord-button>
