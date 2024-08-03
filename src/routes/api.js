@@ -337,7 +337,6 @@ async function routes(fastify, options) {
             fingerprint: request.IPAddress,
             valid: true,
             license_key: license,
-            expire: session.expire,
             timestamp: Math.floor(Date.now() / 1000),
             hub: name
         }));
