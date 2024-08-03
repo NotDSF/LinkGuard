@@ -380,6 +380,35 @@ async function routes(fastify, options) {
             message: "User has been blacklisted"
         });
     });
+
+    fastify.get("/project/:name/generate_license", { schema: { headers: AuthorizationHeader, params: ProjectNameParam } }, async (request, reply) => {
+        const { name } = request.params;
+        const { lg_access_token } = request.headers;
+
+        const Project = await Database.GetProject(name);
+        if (!Project) {
+            return reply.status(404).send({ error: "Project not found" });
+        }
+
+        if (Project.APIKey !== sha256(lg_access_token)) {
+            return reply.status(401).send({ error: "Authorization required" });
+        }
+
+        const License = crypto.randomUUID();
+        const Expire = new Date();
+        Expire.setHours(Expire.getHours() + Project.UserCooldown);
+        
+        const Session = {
+            stage: "finished",
+            complete: true,
+            name: Project.Name,
+            expire: Expire.getTime(),
+            license: License
+        }
+
+        licenses.set(License, Session);
+        reply.send(Session);
+    });
 }
 
 module.exports = routes;
