@@ -11,14 +11,14 @@ function EncodeObject(obj) {
     }
 
     function wInt32(value) {
-        stream.writeUint32LE(value ^ encoding.int32_xor, offset);
+        stream.writeUint32LE(value, offset);
         offset = offset + 4;
     }
 
     function wString(value) {
         wInt32(value.length);
         for (let char of value.split(""))
-            wInt32(char.charCodeAt(0) ^ encoding.string_xor);
+            wInt32(char.charCodeAt(0));
     }
 
     function HandleValue(value) {
@@ -54,7 +54,7 @@ function EncodeObject(obj) {
     }
 
     WriteObject(obj);
-    return stream.slice(0, offset).toString().split("").map(c => `${utf8.encode(c).charCodeAt(0)}`).join("x");
+    return stream.slice(0, offset).toString().split("").map(c => `${utf8.encode(c).charCodeAt(0)}`).join("-");
 }
 
 module.exports = EncodeObject;
