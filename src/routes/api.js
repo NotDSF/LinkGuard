@@ -1,6 +1,5 @@
 const { publishers } = require("../../config.json");
 const database = require("../modules/database");
-const encode = require("../modules/json");
 const crypto = require("crypto");
 const Database = new database();
 const WebhookHandler = require("../modules/webhook");
@@ -292,14 +291,26 @@ async function routes(fastify, options) {
         const session = licenses.get(license);
         
         if (!session || session.name != name) {
-            return reply.status(404).send({ error: "License not found" });
+            return reply.send({ error: "License not found" });
         }
 
         reply.send({
             valid: true,
             license_key: license,
-            expire: session.expire
+            expire: session.expire,
+            project: name
         });
+    });
+
+    fastify.get("/project/:name/info", { schema: { params: ProjectNameParam } }, async (request, reply) => {
+        const { name } = request.params;
+        
+        const Project = await Database.GetProject(name);
+        if (!Project || !Project?.Enabled) {
+            return reply.send({ error: "Project not found" });
+        }
+
+        reply.send({ active: true });
     });
 
     // Discord ID Validation
@@ -316,30 +327,6 @@ async function routes(fastify, options) {
             discord_id: session.user.DiscordID,
             expire: session.expire
         });
-    });
-
-    // License Validation (Roblox)
-    fastify.get("/project/:name/roblox/licenses/:license", { schema: { params: LicenseValidation } }, (request, reply) => {
-        const { license, name } = request.params;
-        const session = licenses.get(license);
-        
-        if (!session || session.name != name) {
-            return reply.send(encode({
-                fingerprint: request.IPAddress,
-                valid: false,
-                timestamp: Math.floor(Date.now() / 1000),
-                hub: name,
-                license_key: license
-            }));
-        }
-
-        reply.send(encode({
-            fingerprint: request.IPAddress,
-            valid: true,
-            license_key: license,
-            timestamp: Math.floor(Date.now() / 1000),
-            hub: name
-        }));
     });
 
     // Blacklist/Unblacklist User (has to be GET for webhooks/easy accessibility)
