@@ -200,7 +200,7 @@ async function routes(fastify, options) {
         const Expire = new Date();
         Expire.setHours(Expire.getHours() + session.project.UserCooldown);
 
-        session.license = crypto.randomUUID();
+        session.license = `lg${crypto.randomUUID().split("-").join("").slice(0, 6)}`;
         session.stage = "finished";
         session.complete = true;
         session.expire = Expire.getTime();
