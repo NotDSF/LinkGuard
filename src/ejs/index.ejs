@@ -7,7 +7,7 @@
     <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
     <link rel="icon" type="image/x-icon" href="/assets/logo.png">
-    <meta name="description" content="Reward your users easily for completing advertisement links while also preventing against bypass.city & others. Easy integration with linkvertise, lootlabs and boost.ink">
+    <meta name="description" content="Redeem your <%=hours%> hour access for <%=name%>, reward your users easily for completing advertisement links while also preventing against bypass.city & others. Easy integration with linkvertise, lootlabs and boost.ink">
     <meta property="og:image" content="https://i.imgur.com/OvdXF10.png" />
     <meta property="twitter:image" content="https://i.imgur.com/OvdXF10.png" />
     <title>LinkGuard | <%=name%></title>
@@ -33,8 +33,9 @@
     </style>
 
     <style>
-        #icon {
-            height: 65px;
+        .icon {
+            position: relative;
+            bottom: -3px;
         }
     </style>
     
@@ -57,20 +58,21 @@
     </nord-header>
 
     <nord-empty-state class="n-gap-m">
-        <h2 style="padding-bottom: 13px;">Redeem your content</h2>
+        <h2><nord-icon name="interface-unlock"></nord-icon> Unlock your Content (<%=name%>)</h2>
+        <p style="width: 30%;"><%=hours%> Hour Access</p>
         <nord-stack justify-content="center" direction="vertical">
             <nord-card>
-                <h2 slot="header"><nord-icon name="interface-face-id" slot="start"></nord-icon>  Login using Discord</h2>
+                <h2 slot="header">1. Login using Discord <nord-icon name="user-single" class="icon"></nord-icon></h2>
                 We require all users to authenticate using Discord, this is done to prevent fraudulent actors from bypassing the reward system and affecting publisher monetization  
             </nord-card>
             <div style="text-align: center;"><nord-icon name="arrow-down-long" slot="start"></nord-icon></div>
             <nord-card>
-                <h2 slot="header"><nord-icon name="interface-link" slot="start"></nord-icon>  Complete the advertisement links</h2>
+                <h2 slot="header">2. Complete the advertisement links <nord-icon name="navigation-tasks" class="icon"></nord-icon></h2>
                 To redeem your content you'll have to complete two advertisement links. For those who try to bypass the links, you will fail and could be subject to a permanent blacklist from this content
             </nord-card>
             <div style="text-align: center;"><nord-icon name="arrow-down-long" class=""></nord-icon></div>
             <nord-card>
-                <h2 slot="header"><nord-icon name="interface-star-filled"></nord-icon>  Enjoy your content!</h2>
+                <h2 slot="header">3. Enjoy your content! <nord-icon name="interface-star-filled" class="icon"></nord-icon></h2>
                 It is that simple, enjoy your content, and redeem more if you like after your cooldown has expired
             </nord-card>
         </nord-stack>

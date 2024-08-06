@@ -57,7 +57,7 @@ async function routes(fastify, options) {
             creation: Date.now()
         });
 
-        return reply.view("index.ejs", { name: Project.Name });
+        return reply.view("index.ejs", { name: Project.Name, hours: Project.UserCooldown });
     });
 
     // Redirects to #1 Link
