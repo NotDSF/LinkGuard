@@ -82,8 +82,6 @@ let shuffleArray = (arr) => arr.sort(() => Math.random() - 0.5);
     mapping.Opcodes.sort((a, b) => a.New - b.New);
 }
 
-console.log(mapping)
-
 async function main(luaC, Options) {
     return new Promise(async (resolve, reject) => {
  

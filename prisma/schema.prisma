@@ -31,9 +31,18 @@ model Project {
 }
 
 model User {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  DiscordID      String   @unique
-  CompletedLinks Int      @default(0)
-  FailedLinks    Int      @default(0)
-  IPs            String[]
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  DiscordID      String @unique
+  CompletedLinks Int    @default(0)
+  FailedLinks    Int    @default(0)
+}
+
+model Session {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  IP        String @unique
+  Expire    String
+  License   String
+  DiscordID String
+  Project   String
+  Creation  String
 }

@@ -107,25 +107,6 @@ module.exports = class Database {
         });
     }
 
-    async AddKnownIPAddress(DiscordID, IP) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const result = await prisma.user.update({
-                    where: { DiscordID },
-                    data: {
-                        IPs: {
-                            push: IP
-                        }
-                    }
-                });
-                resolve(result);
-            } catch (er) {
-                console.log(er);
-                reject(er);
-            }
-        });
-    }
-
     async ProjectIncrementCompleted(Name, Amount) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -209,6 +190,70 @@ module.exports = class Database {
                     where: { Name },
                     data: {
                         Blacklisted
+                    }
+                });
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        });
+    }
+
+    async AddSession(IP, Expire, License, Project, DiscordID) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.session.create({
+                    data: {
+                        IP,
+                        License,
+                        DiscordID,
+                        Project,
+                        Expire: Expire.toString(),
+                        Creation: Date.now().toString()
+                    }
+                });
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        });
+    }
+
+    async GetSession(IP) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.session.findUnique({
+                    where: {
+                        IP
+                    }
+                });
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        });
+    }
+
+    async GetSessions() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.session.findMany();
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+            }
+        });
+    }
+
+    async DeleteSession(IP) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.session.delete({
+                    where: {
+                        IP
                     }
                 });
                 resolve(result);

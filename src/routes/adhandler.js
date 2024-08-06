@@ -5,6 +5,7 @@ const GenerateScript = require("../modules/jslua");
 const DiscordOauth2 = require("discord-oauth2");
 const Webhook = require("../modules/webhook");
 const database = require("../modules/database");
+const logger = require("../modules/log");
 const Database = new database();
 const tokens = new Map();
 
@@ -95,11 +96,6 @@ async function routes(fastify, options) {
             User = await Database.CreateUser(duser.id);
         }
         
-        const HashedIP = sha256(request.IPAddress);
-        if (!User.IPs.find(ip => ip == HashedIP)) {
-            await Database.AddKnownIPAddress(User.DiscordID, HashedIP);
-        }
-
         session.stage = "link-1";
         session.user = User;
         sessions.set(request.IPAddress, session);
@@ -210,6 +206,9 @@ async function routes(fastify, options) {
         dsessions.set(session.user.DiscordID, session);
 
         try {
+            await Database.AddSession(request.IPAddress, session.expire, session.license, session.project.Name, session.user.DiscordID);
+            logger(`Saved session (id=${session.user.DiscordID})`)
+
             await Database.IncrementCompleted(session.user.DiscordID, 2);
             await Database.ProjectIncrementCompleted(session.name, 2);
             
@@ -291,12 +290,58 @@ async function routes(fastify, options) {
     });
 }
 
+(async () => {
+    let restored = 0;
+
+    const result = await Database.GetSessions();
+    logger(`Fetched ${result.length} user sessions`);
+
+    for (const { IP, Expire, License, DiscordID, Project, Creation } of result) {
+        if (Date.now() >= Number(Expire)) {
+            await Database.DeleteSession(IP);
+            continue;
+        }
+
+        const ProjectData = await Database.GetProject(Project);
+        if (!ProjectData) {
+            await Database.DeleteSession(IP);
+            continue;
+        }
+
+        const session = {
+            expire: Number(Expire),
+            stage: "finished",
+            complete: true,
+            name: Project,
+            project: ProjectData,
+            ip: IP,
+            creation: Number(Creation),
+            license: License,
+            user: {
+                DiscordID
+            }
+        }
+
+        sessions.set(IP, session);
+        licenses.set(License, session);
+        dsessions.set(DiscordID, session);
+        restored++;
+    }
+
+    logger(`Restored ${restored}/${result.length}`);
+})();
+
 setInterval(() => {
     const Timestamp = Date.now();
 
-    sessions.forEach((session, ip) => {
+    sessions.forEach(async (session, ip) => {
         if (Timestamp >= session.expire) {
             sessions.delete(ip);
+            try {
+                await Database.DeleteSession(ip);
+            } catch (er) {
+                console.log(er);
+            }
         }
     });
     
