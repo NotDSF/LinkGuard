@@ -298,7 +298,9 @@ async function routes(fastify, options) {
             valid: true,
             license_key: license,
             expire: session.expire,
-            project: name
+            project: name,
+            discord_id: session.user.DiscordID,
+            ip: request.IPAddress
         });
     });
 
@@ -325,7 +327,8 @@ async function routes(fastify, options) {
         reply.send({
             valid: true,
             discord_id: session.user.DiscordID,
-            expire: session.expire
+            expire: session.expire,
+            ip: request.IPAddress
         });
     });
 
