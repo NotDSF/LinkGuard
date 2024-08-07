@@ -263,4 +263,21 @@ module.exports = class Database {
             }
         });
     }
+
+    async GetAllProjectStats() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.project.findMany({
+                    select: {
+                        CompletedLinks: true,
+                        FailedLinks: true
+                    }
+                });
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        });
+    }
 }

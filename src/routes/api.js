@@ -85,7 +85,25 @@ const AuthorizationQuery = {
  * @param {Object} options plugin options, refer to https://www.fastify.io/docs/latest/Reference/Plugins/#plugin-options
 */
 async function routes(fastify, options) {	
-    fastify.get("/", (request, reply) => reply.send({ online: true, version: "1" }));
+    fastify.get("/", async (request, reply) => {
+        let completed = 0;
+        let fails = 0;
+
+        const result = await Database.GetAllProjectStats();
+        for (const { CompletedLinks, FailedLinks } of result) {
+            completed += CompletedLinks;
+            fails += FailedLinks;
+        }
+
+        reply.send({
+            online: true,
+            version: "1",
+            info: {
+                completed,
+                fails
+            }
+        });
+    });
 
     // Create Project
     fastify.post("/project/", { schema: { body: ProjectSchema, headers: AuthorizationHeader } }, async (request, reply) => {

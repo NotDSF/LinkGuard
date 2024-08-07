@@ -119,7 +119,7 @@ async function routes(fastify, options) {
 
                 const duration = (Date.now() - session.creation) / 1000;
                 await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, `error: 0x1 = Invalid Request\n${request.headers.referer || "none"}`, session.project.APIKey);
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, "error: 0x1 = Invalid Request", session.project.APIKey, session.project.Webhook);
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, `error: 0x1 = Invalid Request\n${request.headers.referer || "none"}`, session.project.APIKey, session.project.Webhook);
             } catch (er) {
                 console.log(er);
             }
@@ -166,7 +166,7 @@ async function routes(fastify, options) {
 
                 const duration = (Date.now() - session.creation) / 1000;
                 await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, `error: 0x2 = Invalid Request\n${request.headers.referer || "none"}`, session.project.APIKey);
-                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, "error: 0x2 = Invalid Request", session.project.APIKey, session.project.Webhook);
+                await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, `error: 0x2 = Invalid Request\n${request.headers.referer || "none"}`, session.project.APIKey, session.project.Webhook);
             } catch (er) {
                 console.log(er);
             }
