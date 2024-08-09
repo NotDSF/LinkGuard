@@ -31,10 +31,11 @@ model Project {
 }
 
 model User {
-  id             String @id @default(auto()) @map("_id") @db.ObjectId
-  DiscordID      String @unique
-  CompletedLinks Int    @default(0)
-  FailedLinks    Int    @default(0)
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  DiscordID      String  @unique
+  CompletedLinks Int     @default(0)
+  FailedLinks    Int     @default(0)
+  SeenWarning    Boolean @default(false)
 }
 
 model Session {

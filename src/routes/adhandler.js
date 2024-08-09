@@ -124,6 +124,14 @@ async function routes(fastify, options) {
                 console.log(er);
             }
 
+            if (!session.user.SeenWarning) {
+                await Database.SeenWarningUser(session.user.DiscordID);
+                return reply.view("warning.ejs", {
+                    name: session.project.Name,
+                    message: `0x1: Invalid Request (${request.headers.referer || "none"})`
+                })
+            }
+
             return reply.redirect("./");
         }
 
@@ -169,6 +177,14 @@ async function routes(fastify, options) {
                 await Webhook.UserFail(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, duration, `error: 0x2 = Invalid Request\n${request.headers.referer || "none"}`, session.project.APIKey, session.project.Webhook);
             } catch (er) {
                 console.log(er);
+            }
+
+            if (!session.user.SeenWarning) {
+                await Database.SeenWarningUser(session.user.DiscordID);
+                return reply.view("warning.ejs", {
+                    name: session.project.Name,
+                    message: `0x2: Invalid Request (${request.headers.referer || "none"})`
+                })
             }
 
             return reply.redirect("./");

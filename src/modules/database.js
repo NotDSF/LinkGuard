@@ -280,4 +280,21 @@ module.exports = class Database {
             }
         });
     }
+
+    async SeenWarningUser(DiscordID) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.user.update({
+                    where: { DiscordID },
+                    data: {
+                        SeenWarning: true
+                    }
+                })
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        })
+    }
 }
