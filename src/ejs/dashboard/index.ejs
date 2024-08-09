@@ -43,8 +43,8 @@
     </nord-header>
 
     <nord-empty-state>
-        <h2>Managing Project [<%=name%>]</h2>
-        <p>You are currently managing your project, here you update project information and view your analytics</p>
+        <h2>Managing Project (<%=name%>)</h2>
+        <p>You are currently managing your project, you can update project information and view your analytics</p>
 
         <nord-stack justify-content="center" direction="horizontal" style="text-align: center;">
             <div>
@@ -67,39 +67,64 @@
     <nord-divider direction="horizontal"></nord-divider>
 
     <nord-empty-state id="settings">
-        <h3>Update Project</h3>
-        <nord-stack justify-content="center" direction="horizontal" style="gap: 100px">
-            <div style="gap: 20px; display: grid;">
-                <nord-range label="Redeem Cooldown" id="redeemcooldown" value="<%=redeem%>" min="1" hint="- Hours before users can redeem another" max="72" required></nord-range>                
+        <nord-select label="Reward Type" value="<%=type%>" id="ptype" value="script" style="margin-bottom: 15px;" required>
+            <option value="script">License Key</option>
+            <option value="application">Discord ID</option>
+        </nord-select>
 
-                <nord-select label="Verification Type" value="<%=type%>" id="ptype" value="script" hint="- Choose how to verify completed links" required>
-                    <option value="script">License Key</option>
-                    <option value="application">IP / Discord ID</option>
-                </nord-select>
-    
-                <nord-input label="Discord Webhook" id="awebhook" type="url" placeholder="URL" value="<%=webhook%>" hint="- Log successful & failed attempts" required>
-                    <nord-icon slot="start" name="interface-globe"></nord-icon>
-                </nord-input>
+        <section class="n-grid-2" style="margin-bottom: 20px;">
+            <nord-input label="Ad-Link #1" type="url" id="adone" value="<%=linkone%>" placeholder="URL" hint="- Point to linkguard.cc/<%=name%>/stage-1" required>
+                <nord-icon slot="start" name="interface-globe"></nord-icon>
+            </nord-input>
 
-                <nord-input label="Server ID" id="serverid" type="text" value="<%=serverid%>" placeholder="ID" hint="- Discord Server ID" required>
-                    <nord-icon slot="start" name="interface-email"></nord-icon>
-                </nord-input>
+            <nord-input label="Ad-Link #2" type="url" id="adtwo" value="<%=linktwo%>" placeholder="URL" hint="- Point to linkguard.cc/<%=name%>/stage-2" required>
+                <nord-icon slot="start" name="interface-globe"></nord-icon>
+            </nord-input>
 
-                <nord-input label="Server Invite" id="serverinvite" value="<%=invite%>" type="url" placeholder="URL"  hint="- Permanent Discord Invite" required>
-                    <nord-icon slot="start" name="interface-globe"></nord-icon>
-                </nord-input>
+            <nord-input label="Discord Webhook" id="awebhook" type="url" placeholder="URL" value="<%=webhook%>" hint="- Receive alerts for your project" required>
+                <nord-icon slot="start" name="interface-globe"></nord-icon>
+            </nord-input>
 
-                <nord-input label="Ad-Link #1" type="url" id="adone" value="<%=linkone%>" placeholder="URL" hint="- Point to https://linkguard.cc/<%=name%>/stage-1" required>
-                    <nord-icon slot="start" name="interface-globe"></nord-icon>
-                </nord-input>
-    
-                <nord-input label="Ad-Link #2" type="url" id="adtwo" value="<%=linktwo%>" placeholder="URL" hint="- Point to https://linkguard.cc/<%=name%>/stage-2" required>
-                    <nord-icon slot="start" name="interface-globe"></nord-icon>
-                </nord-input>
+            <nord-input label="Server ID" id="serverid" type="text" value="<%=serverid%>" placeholder="ID" hint="- Your Discord Server ID" required>
+                <nord-icon slot="start" name="interface-email"></nord-icon>
+            </nord-input>
 
-                <nord-button variant="primary" onclick="Save()">Save</nord-button>
-            </div>           
-        </nord-stack>
+            <nord-input label="Server Invite" id="serverinvite" value="<%=invite%>" type="url" placeholder="URL"  hint="- Your Discord Server Invite" required>
+                <nord-icon slot="start" name="interface-globe"></nord-icon>
+            </nord-input>
+
+            <nord-range label="Award For (hours)" id="redeemcooldown" value="<%=redeem%>" min="1" hint="- How many hours you'd like to reward users" max="72" required></nord-range>
+        </section>
+
+        <nord-button variant="primary" onclick="Save()">Save</nord-button>
+    </nord-empty-state>
+
+    <nord-divider direction="horizontal"></nord-divider>
+
+    <nord-empty-state>
+        <h2 id="activesession">Active Sessions</h2>
+        <nord-table>
+            <table>
+              <thead>
+                <tr>
+                  <th>Discord ID</th>
+                  <th>License Key</th>
+                  <th>Stage</th>
+                  <th class="n-table-align-right">Created At</th>
+                  <th class="n-table-align-right">Expires At</th>
+                </tr>
+              </thead>
+              <tbody id="sessiontable">
+                <tr id="sessionentry" style="display: none;">
+                    <td>787086729470541844</td>
+                    <td>lg3434df</td>
+                    <td><nord-badge variant="success">Success</nord-badge></td>
+                    <td class="n-caption n-table-align-right">20.3.2021</td>
+                    <td class="n-caption n-table-align-right">20.3.2021</td>
+                </tr>
+              </tbody>
+            </table>
+          </nord-table>
     </nord-empty-state>
 
     <script>
@@ -113,6 +138,10 @@
         const LinkTwo = document.getElementById("adtwo");
         const ServerID = document.getElementById("serverid");
         const ServerInvite = document.getElementById("serverinvite");
+
+        const ActiveSessions = document.getElementById("activesession");
+        const SessionEntry = document.getElementById("sessionentry");
+        const SessionTable = document.getElementById("sessiontable");
 
         async function Save() {
             const packet = await fetch("/v1/validate/project", {
@@ -161,6 +190,60 @@
 
             window.location.reload();
         }
+
+        function AddSessionEntry(id, license, stage, creation, expiry) {
+            const cloned = SessionEntry.cloneNode(true);
+            cloned.childNodes[1].textContent = id;
+            cloned.childNodes[3].textContent = license;
+            cloned.childNodes[7].textContent = new Date(creation).toLocaleString();
+            cloned.childNodes[9].textContent = expiry ? new Date(expiry).toLocaleString() : "Not Set";
+
+            const badge = cloned.childNodes[5].childNodes[0];
+            switch (stage) {
+                case "finished":
+                    badge.textContent = "Finished";
+                    badge.setAttribute("variant", "success");
+                    break;
+                case "main":
+                    badge.textContent = "On Main Page";
+                    badge.setAttribute("variant", "info");
+                    break;
+                case "linking":
+                    badge.textContent = "Authorising Discord";
+                    badge.setAttribute("variant", "highlight");
+                    break;
+                case "link-1":
+                    badge.textContent = "Link 1";
+                    badge.setAttribute("variant", "warning");
+                    break;
+                case "link-2":
+                    badge.textContent = "Link 2";
+                    badge.setAttribute("variant", "warning");
+                    break;
+                default:
+                    badge.textContent = stage;
+                    badge.setAttribute("variant", "");
+                    break;
+            }
+
+            cloned.style.display = "";
+            SessionTable.appendChild(cloned);
+        }
+
+        (async () => {
+            const packet = await fetch(`/v1/project/${PROJECT_NAME}/sessions/`, {
+                headers: {
+                    ["lg_access_token"]: API_KEY
+                }
+            });
+
+            const sessions = await packet.json();
+
+            ActiveSessions.textContent = `Active Sessions (${sessions.length})`;
+            for (const { user, expire, creation, license, nigger, stage } of sessions) {
+                AddSessionEntry(user?.DiscordID || "Anonymous User", license, stage, creation, expire);
+            }
+        })();
     </script>
 </body>
 </html>

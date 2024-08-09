@@ -322,6 +322,28 @@ async function routes(fastify, options) {
         });
     });
 
+    // Get Sessions
+    fastify.get("/project/:name/sessions/", { schema: { params: ProjectNameParam, headers: AuthorizationHeader } }, async (request, reply) => {
+        const { lg_access_token } = request.headers;
+        const Name = request.params.name;
+        
+        const Project = await Database.GetProject(Name);
+        if (!Project) {
+            return reply.status(404).send({ error: "Project not found" });
+        }
+
+        if (Project.APIKey !== sha256(lg_access_token)) {
+            return reply.status(401).send({ error: "Authorization required" });
+        }
+
+        let UniqueSessions = [];
+        for (const { stage, complete, creation, license, user, name, expire } of [...sessions.values()].filter(session => session.name === Name)) {
+            UniqueSessions.push({ stage, complete, creation, license, user, name, expire });
+        }
+
+        reply.send(UniqueSessions);
+    });
+    
     fastify.get("/project/:name/info", { schema: { params: ProjectNameParam } }, async (request, reply) => {
         const { name } = request.params;
         
