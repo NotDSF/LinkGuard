@@ -212,6 +212,11 @@ async function routes(fastify, options) {
         const Expire = new Date();
         Expire.setHours(Expire.getHours() + session.project.UserCooldown);
 
+        // They waited an hour ;(
+        if (((Date.now() - session.creation) / 1000) >= 3600) {
+            Expire.setHours(Expire.getHours() + 1);
+        }
+
         session.license = `lg${crypto.randomUUID().split("-").join("").slice(0, 6)}`;
         session.stage = "finished";
         session.complete = true;
