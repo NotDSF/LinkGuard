@@ -133,10 +133,9 @@
             const packet = await fetch("/v1/");
             const { info } = await packet.json();
             
-            success.textContent = info.completed;
-            fails.textContent = info.fails;
-
-            revenue.textContent = `$${(info.completed * 0.07).toFixed(2)}`
+            success.textContent = info.completed.toLocaleString();
+            fails.textContent = info.fails.toLocaleString();
+            revenue.textContent = `$${(info.completed * 0.07).toLocaleString()}`
         })();
     </script>
 </body>
