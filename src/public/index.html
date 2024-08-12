@@ -7,7 +7,7 @@
     <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
     <link rel="icon" type="image/x-icon" href="/assets/logo.png">
-    <title>LinkGuard - Protect Your Revenue</title>
+    <title>LinkGuard - Prevent Ad-Bypasses With Ease</title>
     <meta name="description" content="Reward your users easily for completing advertisement links while also preventing against bypass.city & others. Easy integration with linkvertise, lootlabs and boost.ink
     <meta property="og:image" content="https://i.imgur.com/OvdXF10.png" />
     <meta property="twitter:image" content="https://i.imgur.com/OvdXF10.png" />
@@ -25,6 +25,11 @@
 
         nord-stack {
             width: 50%;
+        }
+
+        .icon {
+            position: relative;
+            bottom: -3px;
         }
     </style>
     
@@ -46,19 +51,19 @@
 
     <nord-empty-state class="n-gap-m">
         <h2>Welcome to LinkGuard!</h2>
-        <p>We keep your advertisement links protected from bypasses while also providing useful analytics & simple app integration</p>
+        <p>The simplest solution to prevent ad-bypassing, earn more and secure your well-deserved revenue</p>
         <nord-stack justify-content="center" direction="horizontal">
-            <nord-card>
-                <h2 slot="header"><nord-icon name="generic-cable" slot="start"></nord-icon>  Seemless Integration</h2>
-                We work with all major licensing and publishing platforms, no hassle, connect and earn!
+            <nord-card style="text-align: center;">
+                <h2 slot="header"><nord-icon name="generic-module" slot="start" class="icon"></nord-icon>  Easy Integration</h2>
+                Whether you're an intermediate or beginner, we make it easy to integrate our services into your application, users can be verified easily & securely in seconds
             </nord-card>
-            <nord-card>
-                <h2 slot="header"><nord-icon name="generic-chip" slot="start"></nord-icon>  Specially Curated</h2>
-                Our services have been specifically fine-tuned to maximise and secure your earnings
+            <nord-card style="text-align: center;">
+                <h2 slot="header"><nord-icon name="file-code" slot="start" class="icon"></nord-icon>  Open Source</h2>
+                We understand user privacy is critical, but trust only comes from transparency, which is why our services are fully open source, rest-assured your users are in safe hands
             </nord-card>
-            <nord-card>
-                <h2 slot="header"><nord-icon name="interface-shield" slot="start"></nord-icon>  Anti-Bypass</h2>
-                We are always one step-ahead attackers, rest assured with our never-seen detection technology 
+            <nord-card style="text-align: center;">
+                <h2 slot="header"><nord-icon name="user-block" slot="start" class="icon"></nord-icon>  Anti Ad-Bypass</h2>
+                We want your hard work to pay off, ad-bypasses affect publisher earnings and we're here to prevent that, when using our services you will be informed in real time of bypassers
             </nord-card>
         </nord-stack>
 
@@ -83,6 +88,29 @@
     <nord-divider direction="horizontal"></nord-divider>
 
     <nord-empty-state>
+        <nord-stack justify-content="center" direction="horizontal" style="text-align: center;">
+            <div>
+                <h3>Successful Links</h3>
+                <p id="success">100</p>
+            </div>
+            <nord-divider direction="vertical"></nord-divider>
+            <div>
+                <h3>Detected Bypasses</h3>
+                <p id="fails">300</p>
+            </div>
+            <nord-divider direction="vertical"></nord-divider>
+            <div>
+                <h3>Revenue Generated</h3>
+                <p id="revenue" style="margin: 0px;">$10</p>
+                <p style="color: rgb(160, 160, 160); padding: 0px; margin: 0px;">(estimated)</p>
+            </div>
+        </nord-stack>
+
+    </nord-empty-state>
+
+    <nord-divider direction="horizontal"></nord-divider>
+
+    <nord-empty-state>
         <nord-stack justify-content="center" direction="horizontal" style="margin-bottom: 10px;">
             <a href="https://linkvertise.com/"><nord-avatar src="https://uploads.commoninja.com/searchengine/wordpress/linkvertise-script-api.png" size="xl"></nord-avatar></a>
             <a href="https://lootlabs.gg/"><nord-avatar src="https://a.fsdn.com/allura/s/ad-tech-solutio/icon?ff16363ae6c4c3b5ad127aa4aad15cb9c839b88ba31df6f35086782ce8ba39c9?&w=148" size="xl"></nord-avatar></a>
@@ -95,5 +123,21 @@
             <a href="https://github.com/NotDSF/LinkGuard">GitHub</a>
          </nord-stack>
     </nord-empty-state>    
+
+    <script>
+        const fails = document.getElementById("fails");
+        const success = document.getElementById("success");
+        const revenue = document.getElementById("revenue");
+        
+        (async () => {
+            const packet = await fetch("/v1/");
+            const { info } = await packet.json();
+            
+            success.textContent = info.completed;
+            fails.textContent = info.fails;
+
+            revenue.textContent = `$${(info.completed * 0.07).toFixed(2)}`
+        })();
+    </script>
 </body>
 </html>

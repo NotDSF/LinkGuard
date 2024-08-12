@@ -1,3 +1,5 @@
+// This is ass. from 2 years ago
+
 const { minify } = require("uglify-js");
 const { writeFileSync } = require("fs");
 
