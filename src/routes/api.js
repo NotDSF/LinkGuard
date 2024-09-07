@@ -80,6 +80,15 @@ const AuthorizationQuery = {
     required: ["lg_access_token"]
 }
 
+const CreateLicense = {
+    type: "object",
+    properties: {
+        license: { type: "string", minLength: 4, maxLength: 20 },
+        expiry: { type: "string" }
+    },
+    required: ["license", "expiry"]
+}
+
 /**
  * @param {import("fastify").FastifyInstance} fastify  Encapsulated Fastify Instance
  * @param {Object} options plugin options, refer to https://www.fastify.io/docs/latest/Reference/Plugins/#plugin-options
@@ -411,9 +420,10 @@ async function routes(fastify, options) {
         });
     });
 
-    fastify.get("/project/:name/generate_license", { schema: { headers: AuthorizationHeader, params: ProjectNameParam } }, async (request, reply) => {
+    fastify.post("/project/:name/licenses/", { schema: { headers: AuthorizationHeader, params: ProjectNameParam, body: CreateLicense } }, async (request, reply) => {
         const { name } = request.params;
         const { lg_access_token } = request.headers;
+        const { license, expiry } = request.body;
 
         const Project = await Database.GetProject(name);
         if (!Project) {
@@ -424,19 +434,24 @@ async function routes(fastify, options) {
             return reply.status(401).send({ error: "Authorization required" });
         }
 
-        const License = crypto.randomUUID();
-        const Expire = new Date();
-        Expire.setHours(Expire.getHours() + Project.UserCooldown);
-        
+        const ExpireDate = new Date(+expiry);
+        if (ExpireDate == "Invalid Date") {
+            return reply.status(400).send({ error: "Invalid expiry date" });
+        }
+
+        if (Date.now() > expiry) {
+            return reply.status(400).send({ error: "This date has already passed" });
+        }
+
         const Session = {
             stage: "finished",
             complete: true,
             name: Project.Name,
-            expire: Expire.getTime(),
-            license: License
+            expire: ExpireDate.getTime(),
+            license
         }
 
-        licenses.set(License, Session);
+        licenses.set(license, Session);
         reply.send(Session);
     });
 }

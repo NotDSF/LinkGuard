@@ -101,8 +101,20 @@
 
     <nord-divider direction="horizontal"></nord-divider>
 
+    <nord-modal id="modal" size="s">
+        <h2 slot="header" id="title">Create License Key</h2>
+        <nord-input class="n-margin-be-l" id="licensekey" label="License Key" type="url" id="adone" value="" placeholder="lgxxxxxx" required>
+            <nord-icon slot="start" name="interface-password"></nord-icon>
+        </nord-input>
+        <nord-date-picker id="licenseexpire" label="Expiry Date"></nord-date-picker>
+        <nord-button-group slot="footer" variant="spaced">
+            <nord-button expand id="confirmButton" variant="primary" onclick="CreateLicenseModal()" autofocus>Create</nord-button>
+        </nord-button-group>
+    </nord-modal>
+
     <nord-empty-state>
         <h2 id="activesession">Active Sessions</h2>
+        <nord-button variant="primary" class="n-margin-s" onclick="CreateLicense()">Create a License</nord-button>
         <nord-table>
             <table>
               <thead>
@@ -124,7 +136,7 @@
                 </tr>
               </tbody>
             </table>
-          </nord-table>
+        </nord-table>
     </nord-empty-state>
 
     <script>
@@ -138,10 +150,13 @@
         const LinkTwo = document.getElementById("adtwo");
         const ServerID = document.getElementById("serverid");
         const ServerInvite = document.getElementById("serverinvite");
-
+        const Modal = document.getElementById("modal");
         const ActiveSessions = document.getElementById("activesession");
         const SessionEntry = document.getElementById("sessionentry");
         const SessionTable = document.getElementById("sessiontable");
+
+        const ModalLicense = document.getElementById("licensekey");
+        const ModalExpiry = document.getElementById("licenseexpire");
 
         async function Save() {
             const packet = await fetch("/v1/validate/project", {
@@ -228,6 +243,31 @@
 
             cloned.style.display = "";
             SessionTable.appendChild(cloned);
+        }
+
+        function CreateLicense() {
+            Modal.showModal();
+        }
+
+        async function CreateLicenseModal() {
+            const packet = await fetch(`/v1/project/${PROJECT_NAME}/licenses/`, {
+                method: "POST",
+                headers: {
+                    ["content-type"]: "application/json",
+                    ["lg_access_token"]: API_KEY
+                },
+                body: JSON.stringify({
+                    license: ModalLicense.value,
+                    expiry: ModalExpiry.valueAsNumber.toString()
+                })
+            });
+            
+            const body = await packet.json();
+            if (packet.status !== 200) {
+                return alert(body.error);
+            }
+            
+            Modal.close();
         }
 
         (async () => {
