@@ -148,7 +148,6 @@ async function routes(fastify, options) {
         });
 
         const body = await packet.json();
-        console.log(body);
         if (!body.success) {
             return reply.status(401).send({ error: "Failed to verify the captcha" });
         }
