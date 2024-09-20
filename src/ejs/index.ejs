@@ -7,10 +7,10 @@
     <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
     <link rel="icon" type="image/x-icon" href="/assets/logo.png">
-    <meta name="description" content="Redeem your <%=hours%> hour access for <%=name%>, reward your users easily for completing advertisement links while also preventing against bypass.city & others. Easy integration with linkvertise, lootlabs and boost.ink">
+    <meta name="description" content="Redeem your <%=hours%> hour access">
     <meta property="og:image" content="https://i.imgur.com/OvdXF10.png" />
     <meta property="twitter:image" content="https://i.imgur.com/OvdXF10.png" />
-    <title>LinkGuard | <%=name%></title>
+    <title><%=name%> | Eleutheri Ads</title>
 </head>
 <body>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-V1WR19TZMB"></script>
@@ -60,14 +60,14 @@
     </style>
     
     <nord-header>
-        <h1 class="n-typescale-l">LinkGuard</h1>
+        <h1 class="n-typescale-l">Eleutheri Ads</h1>
         <img src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto,h_50/d4ecdjm7nxkd45iib96y" alt="" srcset="">
         <nord-button href="./" slot="end"><nord-icon name="interface-home" slot="end"></nord-icon>Home</nord-button>
     </nord-header>
 
     <nord-empty-state class="n-gap-m">
-        <h2><nord-icon name="interface-unlock"></nord-icon> Unlock your Content (<%=name%>)</h2>
-        <p style="width: 30%;"><%=hours%> Hour Access</p>
+        <h2><%=name%></h2>
+        <p><%=hours%> Hour Access</p>
         <nord-stack justify-content="center" direction="vertical">
             <nord-card>
                 <h2 slot="header">1. Login using Discord <nord-icon name="user-single" class="icon"></nord-icon></h2>
@@ -88,6 +88,9 @@
         <nord-stack justify-content="center" gap="s" direction="horizontal" class="n-margin-l">
             <nord-button variant="primary" onclick="startTrial()">Redeem</nord-button>
         </nord-stack>
+
+        <a href="https://docs.link.eleutheri.com/tos.html">Terms of Service</a>
+        <a href="https://docs.link.eleutheri.com/privacy.html">Privacy Policy</a>
     </nord-empty-state>
 </body>
 </html>

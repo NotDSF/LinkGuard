@@ -7,7 +7,7 @@
     <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
     <link rel="icon" type="image/x-icon" href="/assets/logo.png">
-    <title>LinkGuard | <%=name%></title>
+    <title><%=name%> | Eleutheri Ads</title>
 </head>
 <body>
     <style>
@@ -36,14 +36,14 @@
     </style>
 
     <nord-header>
-        <h1 class="n-typescale-l">LinkGuard</h1>
+        <h1 class="n-typescale-l">Eleutheri Ads</h1>
         <img src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto,h_50/d4ecdjm7nxkd45iib96y" alt="" srcset="">
-        <nord-button href="https://docs.linkguard.cc" slot="end"><nord-icon name="interface-content-book" slot="end"></nord-icon>Documentation</nord-button>
+        <nord-button href="https://docs.link.eleutheri.com" slot="end"><nord-icon name="interface-content-book" slot="end"></nord-icon>Documentation</nord-button>
         <nord-button href="./" slot="end"><nord-icon name="interface-home" slot="end"></nord-icon>Home</nord-button>
     </nord-header>
 
     <nord-empty-state>
-        <h2>Managing Project (<%=name%>)</h2>
+        <h2><%=name%></h2>
         <p>You are currently managing your project, you can update project information and view your analytics</p>
 
         <nord-stack justify-content="center" direction="horizontal" style="text-align: center;">
@@ -67,34 +67,44 @@
     <nord-divider direction="horizontal"></nord-divider>
 
     <nord-empty-state id="settings">
-        <nord-select label="Reward Type" value="<%=type%>" id="ptype" value="script" style="margin-bottom: 15px;" required>
-            <option value="script">License Key</option>
-            <option value="application">Discord ID</option>
-        </nord-select>
+        <section class="n-grid-2">
+            <nord-input value="<%=name%>" class="n-margin-be-l" label="Display Name" id="dname" type="text" placeholder="Name" hint="- Display name for your link" required>
+                <nord-icon slot="start" name="text-left-align"></nord-icon>
+            </nord-input>
+    
+            <nord-input value="<%=prefix%>" class="n-margin-be-l" label="URL Prefix" id="pname" type="text" placeholder="Prefix" hint="- Located at: link.eleutheri.com/<%=prefix%>/" oninput="ProjectInput()" disabled>
+                <nord-icon slot="start" name="interface-link"></nord-icon>
+            </nord-input>
 
-        <section class="n-grid-2" style="margin-bottom: 20px;">
-            <nord-input label="Ad-Link #1" type="url" id="adone" value="<%=linkone%>" placeholder="URL" hint="- Point to linkguard.cc/<%=name%>/stage-1" required>
+            <nord-input value="<%=webhook%>" label="Discord Webhook" id="awebhook" type="url" placeholder="URL" hint="- Real-time analytics via Webhook" required>
                 <nord-icon slot="start" name="interface-globe"></nord-icon>
             </nord-input>
 
-            <nord-input label="Ad-Link #2" type="url" id="adtwo" value="<%=linktwo%>" placeholder="URL" hint="- Point to linkguard.cc/<%=name%>/stage-2" required>
-                <nord-icon slot="start" name="interface-globe"></nord-icon>
-            </nord-input>
-
-            <nord-input label="Discord Webhook" id="awebhook" type="url" placeholder="URL" value="<%=webhook%>" hint="- Receive alerts for your project" required>
-                <nord-icon slot="start" name="interface-globe"></nord-icon>
-            </nord-input>
-
-            <nord-input label="Server ID" id="serverid" type="text" value="<%=serverid%>" placeholder="ID" hint="- Your Discord Server ID" required>
+            <nord-input value="<%=serverid%>" label="Server ID" id="serverid" type="text" placeholder="ID" hint="- Your Discord Server ID" required>
                 <nord-icon slot="start" name="interface-email"></nord-icon>
             </nord-input>
 
-            <nord-input label="Server Invite" id="serverinvite" value="<%=invite%>" type="url" placeholder="URL"  hint="- Your Discord Server Invite" required>
+            <nord-input value="<%=invite%>" label="Server Invite" id="serverinvite" type="url" placeholder="URL"  hint="- Your Discord Invite" required>
                 <nord-icon slot="start" name="interface-globe"></nord-icon>
             </nord-input>
 
-            <nord-range label="Award For (hours)" id="redeemcooldown" value="<%=redeem%>" min="1" hint="- How many hours you'd like to reward users" max="72" required></nord-range>
+            <nord-select value="<%=type%>" label="Session Type" id="ptype" value="script" hint="- Choose how to verify completed links" required>
+                <option value="license">License Key</option>
+                <option value="discord">Discord ID</option>
+            </nord-select>
+
+            <nord-range value="<%=redeem%>" label="Session Duration" id="redeemcooldown" value="<%=redeem%>" min="1" hint="- How long you want a session to last (hours)" max="72" required></nord-range>
         </section>
+    
+        <div class="n-margin-s">
+            <nord-input value="<%=linkone%>" class="n-margin-be-l" label="Link #1" type="url" id="adone" placeholder="URL" hint="- Redirect to https://link.eleutheri.com/<%=prefix%>/stage-1" required>
+                <nord-icon slot="start" name="interface-globe"></nord-icon>
+            </nord-input>
+
+            <nord-input value="<%=linktwo%>" label="Link #2" type="url" id="adtwo" placeholder="URL" hint="- Redirect to https://link.eleutheri.com/<%=prefix%>/stage-2" required>
+                <nord-icon slot="start" name="interface-globe"></nord-icon>
+            </nord-input>
+        </div>
 
         <nord-button variant="primary" onclick="Save()">Save</nord-button>
     </nord-empty-state>
@@ -141,10 +151,11 @@
 
     <script>
         const API_KEY = "<%=api%>";
-        const PROJECT_NAME = "<%=name%>";
+        const PROJECT_NAME = "<%=prefix%>";
 
         const RedeemCooldown = document.getElementById("redeemcooldown");
         const ProjectType = document.getElementById("ptype");
+        const DisplayName = document.getElementById("dname");
         const WebhookInput = document.getElementById("awebhook");
         const LinkOne = document.getElementById("adone");
         const LinkTwo = document.getElementById("adtwo");
@@ -169,8 +180,9 @@
                     Webhook: WebhookInput.value,
                     ServerInvite: ServerInvite.value,
                     ServerID: ServerID.value,
-                    VerificationType: ProjectType.value,
-                    UserCooldown: RedeemCooldown.value
+                    SessionType: ProjectType.value,
+                    UserCooldown: RedeemCooldown.value,
+                    DisplayName: DisplayName.value
                 })
             })
 
@@ -186,11 +198,11 @@
                     ["lg_access_token"]: API_KEY
                 },
                 body: JSON.stringify({
-                    Name: PROJECT_NAME,
+                    DisplayName: DisplayName.value,
                     Webhook: WebhookInput.value,
                     ServerInvite: ServerInvite.value,
                     ServerID: ServerID.value,
-                    VerificationType: ProjectType.value,
+                    SessionType: ProjectType.value,
                     UserCooldown: RedeemCooldown.value,
                     LinkOne: LinkOne.value,
                     LinkTwo: LinkTwo.value,
@@ -280,7 +292,7 @@
             const sessions = await packet.json();
 
             ActiveSessions.textContent = `Active Sessions (${sessions.length})`;
-            for (const { user, expire, creation, license, nigger, stage } of sessions) {
+            for (const { user, expire, creation, license, stage } of sessions) {
                 AddSessionEntry(user?.DiscordID || "Anonymous User", license, stage, creation, expire);
             }
         })();

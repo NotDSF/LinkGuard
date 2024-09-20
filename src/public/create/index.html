@@ -7,11 +7,11 @@
     <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
     <link rel="icon" type="image/x-icon" href="/assets/logo.png">
-    <title>LinkGuard - Create Project</title>
-    <meta name="description" content="Reward your users easily for completing advertisement links while also preventing against bypass.city & others. Easy integration with linkvertise, lootlabs and boost.ink">
+    <title>Create Link | Eleutheri Ads</title>
+    <meta name="description" content="The simplest solution for developers looking to monetize their software, without the hassle.">
     <meta property="og:image" content="https://i.imgur.com/OvdXF10.png" />
     <meta property="twitter:image" content="https://i.imgur.com/OvdXF10.png" />
-    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 </head>
 <body>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-V1WR19TZMB"></script>
@@ -48,9 +48,9 @@
     </style>
     
     <nord-header>
-        <h1 class="n-typescale-l">LinkGuard</h1>
+        <h1 class="n-typescale-l">Eleutheri Ads</h1>
         <img src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto,h_50/d4ecdjm7nxkd45iib96y" alt="" srcset="">
-        <nord-button href="https://docs.linkguard.cc" slot="end"><nord-icon name="interface-content-book" slot="end"></nord-icon>Documentation</nord-button>
+        <nord-button href="https://docs.link.eleutheri.com" slot="end"><nord-icon name="interface-content-book" slot="end"></nord-icon>Documentation</nord-button>
         <nord-button href="/" slot="end">
           <nord-icon slot="end" name="interface-home"></nord-icon>
           Home
@@ -58,56 +58,68 @@
     </nord-header>
 
     <nord-empty-state class="n-gap-m" >
-        <div id="stageone">
-            <h2>Create Project [1/2]</h2>
+        <h2>Create your Link</h2>
+        <p>Free of charge, no-sign up required.</p>
         
-            <div style="gap: 20px; display: grid;">
-                <nord-range label="Redeem Cooldown" id="redeemcooldown" value="1" min="1" hint="- Hours before users can redeem another" max="72" required></nord-range>                
-                
-                <nord-select label="Verification Type" id="ptype" value="script" hint="- Choose how to verify completed links" required>
-                    <option value="script">License Key</option>
-                    <option value="application">Discord ID</option>
-                </nord-select>
-
-                <nord-input label="Project Name" id="pname" type="text" placeholder="Name" hint="- https://linkguard.cc/:name/" oninput="ProjectInput()" required>
-                    <nord-icon slot="start" name="interface-content-book"></nord-icon>
+        <div id="stageone">
+            <section class="n-grid-2">
+                <nord-input class="n-margin-be-l" label="Display Name" id="dname" type="text" placeholder="Name" hint="- Display name for your link" required>
+                    <nord-icon slot="start" name="text-left-align"></nord-icon>
+                </nord-input>
+        
+                <nord-input class="n-margin-be-l" label="URL Prefix" id="pname" type="text" placeholder="Prefix" hint="- Located at: link.eleutheri.com/:name/" oninput="ProjectInput()" required>
+                    <nord-icon slot="start" name="interface-link"></nord-icon>
                 </nord-input>
     
-                <nord-input label="Discord Webhook" id="awebhook" type="url" placeholder="URL" hint="- Log successful & failed attempts" required>
+                <nord-input label="Discord Webhook" id="awebhook" type="url" placeholder="URL" hint="- Real-time analytics via Webhook" required>
                     <nord-icon slot="start" name="interface-globe"></nord-icon>
                 </nord-input>
-
-                <nord-input label="Server ID" id="serverid" type="text" placeholder="ID" hint="- Discord Server ID" required>
-                    <nord-icon slot="start" name="interface-email"></nord-icon>
+    
+                <nord-input label="Server ID" id="serverid" type="text" placeholder="ID" hint="- Your Discord Server ID" required>
+                    <nord-icon slot="start" name="navigation-settings"></nord-icon>
                 </nord-input>
-
-                <nord-input label="Server Invite" id="serverinvite" type="url" placeholder="URL"  hint="- Permanent Discord Invite" required>
+    
+                <nord-input label="Server Invite" id="serverinvite" type="url" placeholder="URL"  hint="- Your Discord Invite" required>
                     <nord-icon slot="start" name="interface-globe"></nord-icon>
                 </nord-input>
-            </div>
+    
+                <nord-select label="Session Type" id="ptype" value="script" hint="- Choose how to verify completed links" onchange="SessionType()" required>
+                    <option value="license">License Key</option>
+                    <option value="discord">Discord ID</option>
+                </nord-select>
+
+                <nord-range label="Session Duration" id="redeemcooldown" value="<%=redeem%>" min="1" hint="- How long you want a session to last (hours)" max="72" required></nord-range>
+            </section>
             
-            <nord-button variant="primary" style="margin-top: 15px;" onclick="Start()">Continue</nord-button>
+            <div style="text-align: center;">
+                <p id="licensekeyinfo" style="display: none;">License Key:<br>Users will be given a randomly generated license key after they complete the ads<br>You can pass the license into our REST API to verify the authenticity of a user</p>
+            </div>
+    
+            <div style="text-align: center;">
+                <p id="discordidinfo" style="display: none;">Discord ID:<br>A session will be created with their Discord ID after they complete the ads<br>You can pass the Discord ID into our REST API to verify the authenticity of a user</p>
+            </div>
+
+            <nord-button variant="primary" style="margin-top: 15px;" onclick="Start()">Next</nord-button>
         </div>
 
         <div id="stagetwo" style="display: none;">
-            <h2>Create Project [2/2]</h2>
+            <h3>Choose Your Advertisements</h3>
+            <p>We support Linkvertise, LootLabs and Work.ink<p>
         
-            <div style="gap: 20px; display: grid; margin-bottom: 10px;">
-                <nord-input label="Ad-Link #1" type="url" id="adone" placeholder="URL" hint="- Point to https://linkguard.cc/:name/stage-1" required>
+            <div class="n-margin-l">
+                <nord-input class="n-margin-be-l" label="Link #1" type="url" id="adone" placeholder="URL" hint="- Redirect to https://link.eleutheri.com/:name/stage-1" required>
                     <nord-icon slot="start" name="interface-globe"></nord-icon>
                 </nord-input>
     
-                <nord-input label="Ad-Link #2" type="url" id="adtwo" placeholder="URL" hint="- Point to https://linkguard.cc/:name/stage-2" required>
+                <nord-input label="Link #2" type="url" id="adtwo" placeholder="URL" hint="- Redirect to https://link.eleutheri.com/:name/stage-2" required>
                     <nord-icon slot="start" name="interface-globe"></nord-icon>
                 </nord-input>
             </div>
             
-            <div class="h-captcha" data-sitekey="e1321900-084a-4942-90ec-09b84dba4dfc" data-callback="captchaCallback" data-theme="dark"></div>
+            <div class="cf-turnstile n-margin-be-s" data-sitekey="0x4AAAAAAAkW2_eskAyqWkAk" data-callback="captchaCallback"></div>
 
-            <nord-stack justify-content="center" gap="m" direction="horizontal" class="n-margin-l">
-                <nord-button onclick="Back()">Back</nord-button>
-                <nord-button variant="primary" onclick="Create()">Create</nord-button>
-            </nord-stack>
+            <nord-button onclick="Back()">Go Back</nord-button>
+            <nord-button variant="primary" onclick="Create()">Create Link</nord-button>
         </div>
 
         <div id="successful" style="display: none;">
@@ -133,6 +145,7 @@
         const RedeemCooldown = document.getElementById("redeemcooldown");
         const ProjectType = document.getElementById("ptype");
         const NameInput = document.getElementById("pname");
+        const DisplayName = document.getElementById("dname");
         const WebhookInput = document.getElementById("awebhook");
         const LinkOne = document.getElementById("adone");
         const LinkTwo = document.getElementById("adtwo");
@@ -143,6 +156,9 @@
         const PromtStart = document.getElementById("stageone");
         const PromtEnd = document.getElementById("stagetwo");
         const CreatedPromt = document.getElementById("successful");
+    
+        const LicenseKeyInfo = document.getElementById("licensekeyinfo");
+        const DiscordKeyInfo = document.getElementById("discordidinfo");
 
         function Back() {
             if (!IsVisible(PromtEnd)) return;
@@ -151,21 +167,30 @@
             PromtStart.style.display = "";
         }
 
+        function SessionType() {
+            LicenseKeyInfo.style.display = ProjectType.value === "license" ? "" : "none";
+            DiscordKeyInfo.style.display = ProjectType.value === "discord" ? "" : "none";
+        }
+
         async function Start() {
             if (!NameInput.value.length || !WebhookInput.value.length || !ServerInvite.value.length) {
                 return;
             }
 
-            if (NameInput.value.length < 3 || NameInput.value.length > 8) {
-                return alert("Project name must be between 3-8 characters");
+            if (NameInput.value.length < 3 || NameInput.value.length > 20) {
+                return alert("The URL Prefix is too large (3-20 characters)");
             }
 
-            if (ProjectType.value !== "script" && ProjectType.value !== "application") {
-                return alert("You must specify the project type");
+            if (DisplayName.value.length < 3 || DisplayName.value.length > 20) {
+                return alert("The Display Name is too large (3-20 characters)");
+            }
+
+            if (ProjectType.value !== "discord" && ProjectType.value !== "license") {
+                return alert("You must specify your session type");
             }
 
             if (IsVisible(ServerID) && !ServerID.value.length) {
-                return alert("You must specify the Server ID");
+                return alert("You must specify your Discord Server ID");
             }
 
             const packet = await fetch("/v1/validate/project", {
@@ -175,10 +200,11 @@
                 },
                 body: JSON.stringify({
                     Name: NameInput.value,
+                    DisplayName: DisplayName.value,
                     Webhook: WebhookInput.value,
                     ServerInvite: ServerInvite.value,
                     ServerID: ServerID.value,
-                    VerificationType: ProjectType.value,
+                    SessionType: ProjectType.value,
                     UserCooldown: RedeemCooldown.value
                 })
             })
@@ -191,8 +217,8 @@
             PromtEnd.style.display = "";
             PromtStart.style.display = "none";
 
-            LinkOne.hint = `- Point to https://linkguard.cc/${NameInput.value}/stage-1`;
-            LinkTwo.hint = `- Point to https://linkguard.cc/${NameInput.value}/stage-2`;   
+            LinkOne.hint = `- Redirect to https://link.eleutheri.com/${NameInput.value}/stage-1`;
+            LinkTwo.hint = `- Redirect to https://link.eleutheri.com/${NameInput.value}/stage-1`;   
         }
 
         async function Create() {
@@ -206,10 +232,11 @@
                 },
                 body: JSON.stringify({
                     Name: NameInput.value,
+                    DisplayName: DisplayName.value,
                     Webhook: WebhookInput.value,
                     ServerInvite: ServerInvite.value,
                     ServerID: ServerID.value,
-                    VerificationType: ProjectType.value,
+                    SessionType: ProjectType.value,
                     UserCooldown: RedeemCooldown.value,
                     LinkOne: LinkOne.value,
                     LinkTwo: LinkTwo.value,
@@ -229,7 +256,7 @@
         }
 
         function ProjectInput() {
-            NameInput.hint = `- https://linkguard.cc/${NameInput.value}/`;
+            NameInput.hint = `- Located at: link.eleutheri.com/${NameInput.value}/`;
         }
 
         let ikthisisneeded = false;

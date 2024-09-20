@@ -30,19 +30,20 @@ module.exports = class Database {
         });
     }
 
-    async CreateProject(Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType, APIKey) {
+    async CreateProject(Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, APIKey) {
         return new Promise(async (resolve, reject) => {
             try {
                 const result = await prisma.project.create({
                     data: { 
                         Name, 
+                        DisplayName,
                         Webhook, 
                         ServerInvite, 
                         ServerID, 
                         LinkOne, 
                         LinkTwo, 
                         UserCooldown, 
-                        VerificationType,
+                        SessionType,
                         APIKey 
                     }
                 });
@@ -54,20 +55,20 @@ module.exports = class Database {
         })
     }
 
-    async UpdateProject(CurrentName, Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType, Enabled) {
+    async UpdateProject(CurrentName, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Enabled) {
         return new Promise(async (resolve, reject) => {
             try {
                 const result = await prisma.project.update({
                     where: { Name: CurrentName },
                     data: { 
-                        Name, 
+                        DisplayName,
                         Webhook, 
                         ServerInvite, 
                         ServerID, 
                         LinkOne, 
                         LinkTwo, 
                         UserCooldown,
-                        VerificationType,
+                        SessionType,
                         Enabled: Enabled
                     }
                 });

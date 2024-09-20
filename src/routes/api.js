@@ -12,30 +12,48 @@ global.dsessions = new Map();
 const ProjectSchema = {
     type: "object",
     properties: {
-        Name: { type: "string", maxLength: 8, minLength: 3 },
+        Name: { type: "string", maxLength: 20, minLength: 3 },
+        DisplayName: { type: "string", maxLength: 20, minLength: 4 },
         Webhook: { type: "string", maxLength: 150, minLength: 50 },
         ServerInvite: { type: "string" },
         ServerID: { type: "string" },
         LinkOne: { type: "string" },
         LinkTwo: { type: "string" },
         UserCooldown: { type: "number" },
-        VerificationType: { type: "string" },
+        SessionType: { type: "string" },
         Enabled: { type: "boolean" }
     },
-    required: ["Name", "Webhook", "ServerInvite", "ServerID", "LinkOne", "LinkTwo", "UserCooldown", "Enabled", "VerificationType"]
+    required: ["Name", "Webhook", "ServerInvite", "ServerID", "LinkOne", "LinkTwo", "UserCooldown", "Enabled", "SessionType", "DisplayName"]
+}
+
+const UpdateProjectSchema = {
+    type: "object",
+    properties: {
+        DisplayName: { type: "string", maxLength: 20, minLength: 4 },
+        Webhook: { type: "string", maxLength: 150, minLength: 50 },
+        ServerInvite: { type: "string" },
+        ServerID: { type: "string" },
+        LinkOne: { type: "string" },
+        LinkTwo: { type: "string" },
+        UserCooldown: { type: "number" },
+        SessionType: { type: "string" },
+        Enabled: { type: "boolean" }
+    },
+    required: ["Webhook", "ServerInvite", "ServerID", "LinkOne", "LinkTwo", "UserCooldown", "Enabled", "SessionType", "DisplayName"]
 }
 
 const ValidateProjectSchema = {
     type: "object",
     properties: {
         Name: { type: "string" },
+        DisplayName: { type: "string" },
         Webhook: { type: "string" },
         ServerInvite: { type: "string" },
         ServerID: { type: "string" },
         UserCooldown: { type: "string" },
-        VerificationType: { type: "string" }
+        SessionType: { type: "string" }
     },
-    required: ["Name", "Webhook", "ServerInvite", "ServerID", "VerificationType", "UserCooldown"]
+    required: ["Name", "Webhook", "ServerInvite", "ServerID", "SessionType", "UserCooldown", "DisplayName"]
 }
 
 const AuthorizationHeader = {
@@ -117,43 +135,46 @@ async function routes(fastify, options) {
     // Create Project
     fastify.post("/project/", { schema: { body: ProjectSchema, headers: AuthorizationHeader } }, async (request, reply) => {
         const { lg_access_token } = request.headers;
-        const { Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType } = request.body;
+        const { Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, DisplayName } = request.body;
 
-        const packet = await fetch("https://api.hcaptcha.com/siteverify", {
+        let form = new FormData();
+        form.append("response", lg_access_token);
+        form.append("secret", process.env.CAPTCHA_SECRET);
+        form.append("remoteip", request.IPAddress);
+
+        const packet = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
             method: "POST",
-            body: new URLSearchParams({
-                response: lg_access_token,
-                secret: process.env.HCAPTCHA_SECRET
-            })
+            body: form
         });
 
-        if (packet.status !== 200) {
-            return reply.status(401).send({ error: "Failed to verify captcha" });
-        }
-
         const body = await packet.json();
+        console.log(body);
         if (!body.success) {
-            return reply.status(401).send({ error: "Failed to verify captcha" });
+            return reply.status(401).send({ error: "Failed to verify the captcha" });
         }
 
         if (Name.match(/[^\w-]/)) {
-            return reply.status(400).send({ error: "Project name cannot include special characters" });
+            return reply.status(400).send({ error: "The project name contains invalid characters" });
+        }
+
+        if (!DisplayName.match(/^[\w'\-\!\s.\d]+$/)) {
+            return reply.status(400).send({ error: "The display name contains invalid characters" });
         }
 
         if (!Webhook.match(/^https:\/\/(canary\.)?discord(app)?.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
-            return reply.status(400).send({ error: "Invalid webhook URL (must be a valid discord URL)" });
+            return reply.status(400).send({ error: "The webhook url is not valid (must be a valid discord URL)" });
         }
 
         if (!ServerInvite.match(/^https:\/\/discord\.(gg)?(com)?\/(invite\/)?\w+$/)) {
-            return reply.status(400).send({ error: "Invalid server invite (must start with https://)" });
+            return reply.status(400).send({ error: "The server invite is not valid (must be a valid discord URL)" });
         }
 
         if (!ServerID.match(/^\d{10,20}$/)) {
-            return reply.status(400).send({ error: "Invalid server ID" });
+            return reply.status(400).send({ error: "The server id is not valid (must be a discord server id)" });
         }
 
         if (UserCooldown > 72 || UserCooldown < 0) {
-            return reply.status(400).send({ error: "Invalid cooldown (must be hours)" });
+            return reply.status(400).send({ error: "Your cooldown must be between 0-72 hours" });
         }
 
         const resone = await fetch("https://proxy.xhspkkecfo.workers.dev/", {
@@ -171,20 +192,20 @@ async function routes(fastify, options) {
         }).then(res => res.text())
 
         if (!publishers.includes(resone)) {
-            return reply.status(400).send({ error: "Invalid advertisement link #1" });
+            return reply.status(400).send({ error: "The provided ad-link was invalid (url one)" });
         }
 
         if (!publishers.includes(restwo)) {
-            return reply.status(400).send({ error: "Invalid advertisement link #2" });
+            return reply.status(400).send({ error: "The provided ad-link was invalid (url two)" });
         }
 
         const Project = await Database.GetProject(Name);
         if (Project) {
-            return reply.status(400).send({ error: "Project already exists" });
+            return reply.status(400).send({ error: "This url prefix is already taken" });
         }
 
         const APIKey = crypto.randomUUID();
-        const Result = await Database.CreateProject(Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType, sha256(APIKey));
+        const Result = await Database.CreateProject(Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, sha256(APIKey));
         
         try {
             await WebhookHandler.CreatedProject(Name, `REDACTED`);    
@@ -198,22 +219,22 @@ async function routes(fastify, options) {
     });
 
     // Update Project
-    fastify.put("/project/:name", { schema: { body: ProjectSchema, headers: AuthorizationHeader, params: ProjectNameParam } }, async (request, reply) => {
+    fastify.put("/project/:name", { schema: { body: UpdateProjectSchema, headers: AuthorizationHeader, params: ProjectNameParam } }, async (request, reply) => {
         const { name } = request.params;
         const { lg_access_token } = request.headers;
-        const { Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType, Enabled } = request.body;
+        const { Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Enabled, DisplayName } = request.body;
 
         const Project = await Database.GetProject(name);
         if (!Project) {
-            return reply.status(404).send({ error: "Project not found" });
+            return reply.status(404).send({ error: "This project can't be found" });
         }
 
         if (Project.APIKey !== sha256(lg_access_token)) {
             return reply.status(401).send({ error: "Authorization required" });
         }
 
-        if (Name.match(/[^\w-]/)) {
-            return reply.status(400).send({ error: "Project name cannot include special characters" });
+        if (!DisplayName.match(/^[\w'\-\!\s.\d]+$/)) {
+            return reply.status(400).send({ error: "The display name contains invalid characters" });
         }
 
         if (!Webhook.match(/^https:\/\/(canary\.)?discord(app)?.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
@@ -221,7 +242,7 @@ async function routes(fastify, options) {
         }
 
         if (!ServerInvite.match(/^https:\/\/discord\.(gg)?(com)?\/(invite\/)?\w+$/)) {
-            return reply.status(400).send({ error: "Invalid server invite (must start with https://)" });
+            return reply.status(400).send({ error: "The server invite is not valid (must be a valid discord URL)" });
         }
 
         if (!ServerID.match(/^\d{10,20}$/)) {
@@ -229,7 +250,7 @@ async function routes(fastify, options) {
         }
 
         if (UserCooldown > 72 || UserCooldown < 0) {
-            return reply.status(400).send({ error: "Invalid cooldown (must be hours)" });
+            return reply.status(400).send({ error: "Your cooldown must be between 0-72 hours" });
         }
 
         const resone = await fetch("https://proxy.xhspkkecfo.workers.dev/", {
@@ -254,12 +275,7 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Invalid advertisement link #2" });
         }
 
-        const Existing = await Database.GetProject(Name);
-        if (Existing && Existing.Name !== Project.Name) {
-            return reply.send({ error: "Project name is taken" });
-        }
-
-        const Result = await Database.UpdateProject(Project.Name, Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, VerificationType, Enabled);
+        const Result = await Database.UpdateProject(Project.Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Enabled);
         return reply.send(Result);
     });
 
@@ -283,10 +299,14 @@ async function routes(fastify, options) {
 
     // Validation for the frontend
     fastify.post("/validate/project", { schema: { body: ValidateProjectSchema } }, async (request, reply) => {
-        const { Name, Webhook, ServerInvite, ServerID, UserCooldown, VerificationType } = request.body;
+        const { Name, Webhook, ServerInvite, ServerID, UserCooldown, SessionType, DisplayName } = request.body;
 
         if (!Name.match(/^[\w-]{3,8}$/)) {
             return reply.status(400).send({ error: "Cannot include special characters or spaces in the Project Name" });
+        }
+
+        if (!DisplayName.match(/^[\w'\-\!\s.\d]+$/)) {
+            return reply.status(400).send({ error: "The display name contains invalid characters" });
         }
 
         if (!Webhook.match(/^https:\/\/(canary\.)?discord(app)?.com\/api\/webhooks\/\d+\/[\w\d-]+$/)) {
@@ -305,8 +325,8 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "User Cooldown is not valid (must be hours)" });
         }
         
-        if (VerificationType != "script" && VerificationType != "application") {
-            return reply.status(400).send({ error: "Verification Type is not valid (script or application)" });
+        if (SessionType != "license" && SessionType != "discord") {
+            return reply.status(400).send({ error: "Session Type is not valid (License Key or Discord ID)" });
         }
 
         reply.send({ ok: true });

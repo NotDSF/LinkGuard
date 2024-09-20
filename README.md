@@ -1,7 +1,7 @@
-# LinkGuard
-Reward your users easily for completing advertisement links while also preventing against bypass.city & others
+# Eleutheri Ads
+The simplest solution for developers looking to monetize their software, without the hassle.                
 
-![](https://linkguard.cc/assets/Diagram.png)
+![](https://link.eleutheri.com/assets/Diagram.png)
 
 ## Supported Publishers
 - [Linkvertise](https://linkvertise.com)
@@ -9,9 +9,8 @@ Reward your users easily for completing advertisement links while also preventin
 - [Boost.ink](https://boost.ink)
 
 ## Getting Started
-- Head over to [linkguard.cc](https://linkguard.cc)
+- Head over to [link.eleutheri.com](https://link.eleutheri.com)
 - Navigate to **Create Link**
-- Input the required details
 
 ## Validation Methods
 API Methods to verify users have completed advertisement links
@@ -21,7 +20,7 @@ API Methods to verify users have completed advertisement links
 
 Validate completed links via Discord ID
 ```javascript
-const packet = await fetch(`https://linkguard.cc/v1/project/:projectName/discord/:discordID`);
+const packet = await fetch(`https://link.eleutheri.com/v1/project/:projectPrefix/discord/:discordID`);
 if (packet.status !== 200) {
     return console.log("Invalid License");
 }
@@ -39,10 +38,10 @@ console.log("Valid License:", body);
 ```python
 import requests
 
-project_name = ""
+project_prefix = ""
 license_key = input("License Key: ")
 
-response = requests.get("https://linkguard.cc/v1/project/{}/licenses/{}".format(project_name, license_key))
+response = requests.get("https://link.eleutheri.com/v1/project/{}/licenses/{}".format(project_prefix, license_key))
 if response.status_code != 200:
     print("Invalid License")
     exit(1)
@@ -60,20 +59,11 @@ We'd love for your contributions, you'll need some resources first:
 
 ### Environment Structure
 ```env
-# MongoDB
 DATABASE_URL=""
-
-# Discord OAuth (whitelist '127.0.0.1:8080/discord' on your application)
 DISCORD_OAUTH_ID=""
 DISCORD_OAUTH_SECRET=""
-
-# HCaptcha
-HCAPTCHA_SECRET=""
-
-# Discord Webhooks
+CAPTCHA_SECRET=""
 SUCCESS_WEBHOOK=""
 PROJECT_WEBHOOK=""
-
-# Better Uptime
 UPTIME_URL=""
 ```

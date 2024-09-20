@@ -15,8 +15,9 @@ datasource db {
 
 model Project {
   id               String   @id @default(auto()) @map("_id") @db.ObjectId
-  VerificationType String
-  Name             String   @unique // Name / ID
+  SessionType      String
+  DisplayName      String
+  Name             String   @unique // URL Prefix / Main Identifer
   Webhook          String
   ServerInvite     String
   ServerID         String
@@ -28,6 +29,7 @@ model Project {
   CompletedLinks   Int      @default(0)
   FailedLinks      Int      @default(0)
   Blacklisted      String[] @default([])
+  LinkViews        Int      @default(0)
 }
 
 model User {

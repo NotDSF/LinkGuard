@@ -11,7 +11,7 @@ async function CreatedProject(page, apikey, webhook) {
           "embeds": [
             {
               "title": "Project Created",
-              "description": `Your project has been created!\n- [Dashboard](https://linkguard.cc/${page}/dashboard)\n- [Page](https://linkguard.cc/${page}/)`,
+              "description": `Your project has been created!\n- [Dashboard](https://link.eleutheri.com/${page}/dashboard)\n- [Page](https://link.eleutheri.com/${page}/)`,
               "color": 11725183,
               "fields": [
                 {
@@ -20,14 +20,14 @@ async function CreatedProject(page, apikey, webhook) {
                 }
               ],
               "author": {
-                "name": `LinkGuard [${page}]`,
-                "url": `https://linkguard.cc/${page}/`,
-                "icon_url": "https://linkguard.cc/assets/logo.png"
+                "name": `Eleutheri Ads [${page}]`,
+                "url": `https://link.eleutheri.com/${page}/`,
+                "icon_url": "https://link.eleutheri.com/assets/logo.png"
               }
             }
           ],
-          "username": "LinkGuard",
-          "avatar_url": "https://linkguard.cc/assets/logo.png",
+          "username": "Eleutheri Ads",
+          "avatar_url": "https://link.eleutheri.com/assets/logo.png",
           "attachments": []
         })
       });
@@ -56,7 +56,7 @@ async function UserFail(page, id, completed, fails, duration, error, apikey, web
               "fields": [
                 {
                   "name": ":book: Information",
-                  "value": `<@${id}> (${completed} completions, ${fails} fails) [(Blacklist)](https://linkguard.cc/v1/project/${page}/user/${id}?lg_access_token=${apikey})\nDuration: ${duration}s`
+                  "value": `<@${id}> (${completed} completions, ${fails} fails) [(Blacklist)](https://link.eleutheri.com/v1/project/${page}/user/${id}?lg_access_token=${apikey})\nDuration: ${duration}s`
                 },
                 {
                   "name": ":closed_book: Debug Information",
@@ -64,14 +64,14 @@ async function UserFail(page, id, completed, fails, duration, error, apikey, web
                 }
               ],
               "author": {
-                "name": `LinkGuard [${page}]`,
-                "url": `https://linkguard.cc/${page}/`,
-                "icon_url": "https://linkguard.cc/assets/logo.png"
+                "name": `Eleutheri Ads [${page}]`,
+                "url": `https://link.eleutheri.com/${page}/`,
+                "icon_url": "https://link.eleutheri.com/assets/logo.png"
               }
             }
           ],
-          "username": "LinkGuard",
-          "avatar_url": "https://linkguard.cc/assets/logo.png",
+          "username": "Eleutheri Ads",
+          "avatar_url": "https://link.eleutheri.com/assets/logo.png",
           "attachments": []
         })
       });
@@ -100,7 +100,7 @@ async function LicenseSuccess(page, id, completed, fails, license, duration, api
               "fields": [
                 {
                   "name": ":book: Information",
-                  "value": `<@${id}> (${completed} completions, ${fails} fails) [(Blacklist)](https://linkguard.cc/v1/project/${page}/user/${id}?lg_access_token=${apikey})\nDuration: ${duration}s`
+                  "value": `<@${id}> (${completed} completions, ${fails} fails) [(Blacklist)](https://link.eleutheri.com/v1/project/${page}/user/${id}?lg_access_token=${apikey})\nDuration: ${duration}s`
                 },
                 {
                   "name": "License Key",
@@ -108,14 +108,14 @@ async function LicenseSuccess(page, id, completed, fails, license, duration, api
                 }
               ],
               "author": {
-                "name": `LinkGuard [${page}]`,
-                "url": `https://linkguard.cc/${page}/`,
-                "icon_url": "https://linkguard.cc/assets/logo.png"
+                "name": `Eleutheri Ads [${page}]`,
+                "url": `https://link.eleutheri.com/${page}/`,
+                "icon_url": "https://link.eleutheri.com/assets/logo.png"
               }
             }
           ],
-          "username": "LinkGuard",
-          "avatar_url": "https://linkguard.cc/assets/logo.png",
+          "username": "Eleutheri Ads",
+          "avatar_url": "https://link.eleutheri.com/assets/logo.png",
           "attachments": []
         })
       });
@@ -144,18 +144,18 @@ async function ApplicationSuccess(page, id, completed, fails, duration, apikey, 
               "fields": [
                 {
                   "name": ":book: Information",
-                  "value": `<@${id}> (${completed} completions, ${fails} fails) [(Blacklist)](https://linkguard.cc/v1/project/${page}/user/${id}?lg_access_token=${apikey})\nDuration: ${duration}s`
+                  "value": `<@${id}> (${completed} completions, ${fails} fails) [(Blacklist)](https://link.eleutheri.com/v1/project/${page}/user/${id}?lg_access_token=${apikey})\nDuration: ${duration}s`
                 }
               ],
               "author": {
-                "name": `LinkGuard [${page}]`,
-                "url": `https://linkguard.cc/${page}/`,
-                "icon_url": "https://linkguard.cc/assets/logo.png"
+                "name": `Eleutheri Ads [${page}]`,
+                "url": `https://link.eleutheri.com/${page}/`,
+                "icon_url": "https://link.eleutheri.com/assets/logo.png"
               }
             }
           ],
-          "username": "LinkGuard",
-          "avatar_url": "https://linkguard.cc/assets/logo.png",
+          "username": "Eleutheri Ads",
+          "avatar_url": "https://link.eleutheri.com/assets/logo.png",
           "attachments": []
         })
       });

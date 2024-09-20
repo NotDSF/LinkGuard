@@ -7,8 +7,8 @@
     <script type="module" src="https://nordcdn.net/ds/components/3.8.0/index.js" integrity="sha384-zvZDBl7G/h/0UeesdZH1CBfL9kfoMi+5/I28m8u8yCgzJC7kohDH3I6XgaMzYnLW" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://nordcdn.net/ds/themes/8.0.1/nord-dark.css" integrity="sha384-4mfQkitA1YUssjHukrfVhopnhPw9eM2tX8Z05rZ/5NJRmDJN1fQp2gGfwydx2SzL" crossorigin="anonymous" />
     <link rel="icon" type="image/x-icon" href="/assets/logo.png">
-    <title>LinkGuard - Prevent Ad-Bypasses With Ease</title>
-    <meta name="description" content="Reward your users easily for completing advertisement links while also preventing against bypass.city & others. Easy integration with linkvertise, lootlabs and boost.ink
+    <title>Eleutheri Ads | Monetize Software Easily</title>
+    <meta name="description" content="The simplest solution for developers looking to monetize their software, without the hassle.">
     <meta property="og:image" content="https://i.imgur.com/OvdXF10.png" />
     <meta property="twitter:image" content="https://i.imgur.com/OvdXF10.png" />
 </head>
@@ -52,32 +52,51 @@
     </style>
     
     <nord-header>
-        <h1 class="n-typescale-l">LinkGuard</h1>
+        <h1 class="n-typescale-l">Eleutheri Ads</h1>
         <img src="https://res.cloudinary.com/dlxrsqy04/image/upload/f_auto,q_auto,h_50/d4ecdjm7nxkd45iib96y" alt="" srcset="">
-        <nord-button href="https://status.linkguard.cc" slot="end"><nord-icon name="arrow-up-down-long" slot="end"></nord-icon>Server Status</nord-button>
+        <nord-button href="https://status.eleutheri.com" slot="end"><nord-icon name="generic-server" slot="end"></nord-icon>Server Status</nord-button>
     </nord-header>
 
     <nord-empty-state class="n-gap-m">
-        <h2>Welcome to LinkGuard!</h2>
-        <p>The simplest solution to prevent ad-bypassing, earn more and secure your well-deserved revenue</p>
-        <nord-stack justify-content="center" direction="horizontal">
+        <h2>Monetize Software Easily</h2>
+        <p>The simplest solution for developers looking to monetize their software, without the hassle.</p>
+
+        <nord-stack justify-content="center" direction="horizontal" class="n-margin-be-l">
             <nord-card style="text-align: center;">
                 <h2 slot="header"><nord-icon name="generic-module" slot="start" class="icon"></nord-icon>  Easy Integration</h2>
-                Whether you're an intermediate or beginner, we make it easy to integrate our services into your application, users can be verified easily & securely in seconds
+                Issue completed users with a randomly generated License Key, or verify from your server using their Discord ID 
             </nord-card>
             <nord-card style="text-align: center;">
                 <h2 slot="header"><nord-icon name="file-code" slot="start" class="icon"></nord-icon>  Open Source</h2>
-                We understand user privacy is critical, but trust only comes from transparency, which is why our services are fully open source, rest-assured your users are in safe hands
+                Unlike other services, our entire source code is available on GitHub. Rest-assured your users are in safe hands.
             </nord-card>
             <nord-card style="text-align: center;">
                 <h2 slot="header"><nord-icon name="user-block" slot="start" class="icon"></nord-icon>  Anti Ad-Bypass</h2>
-                We want your hard work to pay off, ad-bypasses affect publisher earnings and we're here to prevent that, when using our services you will be informed in real time of bypassers
+                Prevent fraudelent actors from bypassing ad-links, which could affect your monetization / reward system
+            </nord-card>
+        </nord-stack>
+
+        <nord-stack justify-content="center" direction="horizontal">
+            <nord-card style="text-align: center;">
+                <h2 slot="header"><nord-icon name="interface-star" slot="start" class="icon"></nord-icon>  Reward Users</h2>
+                Using our REST API you can easily verify and reward users, either via License Key or Discord ID 
+            </nord-card>
+            <nord-card style="text-align: center;">
+                <h2 slot="header"><nord-icon name="navigation-reports" slot="start" class="icon"></nord-icon>  Analytics</h2>
+                Gain real-time analytics into your projects, gained revenue, blocked users, and successful users.
+            </nord-card>
+            <nord-card style="text-align: center;">
+                <h2 slot="header"><nord-icon name="medical-heart-rate-3" slot="start" class="icon"></nord-icon>  24/7 Uptime</h2>
+                Lightweight, extremely performant. Your users won't experience outages with us. 
             </nord-card>
         </nord-stack>
 
         <nord-stack justify-content="center" gap="s" direction="horizontal" class="n-margin-l" style="text-align: center;">
-            <nord-button variant="primary" href="./create">Create a Link</nord-button>
-            <nord-button href="https://docs.linkguard.cc">
+            <nord-button variant="primary" href="./create">
+                <nord-icon slot="end" name="generic-port"></nord-icon>
+                Get Started
+            </nord-button>
+            <nord-button href="https://docs.link.eleutheri.com">
                 <nord-icon slot="end" name="interface-content-book"></nord-icon>
                 Documentation
               </nord-button>
@@ -89,44 +108,38 @@
     <nord-empty-state>
         <h3>More Revenue in your Pocket</h3>
         <p>Using our state of the art technology we're able to create a secure tunnel for all major advertising platforms</p>
-
         <img src="./assets/Diagram.png" alt="" srcset="">
     </nord-empty-state>
 
     <nord-divider direction="horizontal"></nord-divider>
 
     <nord-empty-state>
-        <nord-stack justify-content="center" direction="horizontal" style="text-align: center;">
+
+        <nord-stack justify-content="center" direction="horizontal" style="text-align: center;" class="">
             <div>
-                <h3>Successful Links</h3>
-                <p id="success">100</p>
+                <h3>Completed Users</h3>
+                <p id="success">1,796</p>
             </div>
             <nord-divider direction="vertical"></nord-divider>
             <div>
-                <h3>Detected Bypasses</h3>
-                <p id="fails">300</p>
+                <h3>Blocked Users</h3>
+                <p id="fails">246</p>
             </div>
             <nord-divider direction="vertical"></nord-divider>
             <div>
                 <h3>Revenue Generated</h3>
-                <p id="revenue" style="margin: 0px;">$10</p>
+                <p id="revenue" style="margin: 0px;">$125.72</p>
                 <p style="color: rgb(160, 160, 160); padding: 0px; margin: 0px;">(estimated)</p>
             </div>
         </nord-stack>
-
     </nord-empty-state>
 
     <nord-divider direction="horizontal"></nord-divider>
 
     <nord-empty-state>
-        <nord-stack justify-content="center" direction="horizontal" style="margin-bottom: 10px;">
-            <a href="https://linkvertise.com/"><nord-avatar src="https://uploads.commoninja.com/searchengine/wordpress/linkvertise-script-api.png" size="xl"></nord-avatar></a>
-            <a href="https://lootlabs.gg/"><nord-avatar src="https://a.fsdn.com/allura/s/ad-tech-solutio/icon?ff16363ae6c4c3b5ad127aa4aad15cb9c839b88ba31df6f35086782ce8ba39c9?&w=148" size="xl"></nord-avatar></a>
-            <a href="https://boost.ink/"><nord-avatar src="https://pbs.twimg.com/profile_images/1352904114557095937/uLDYmVnV_400x400.jpg" size="xl"></nord-avatar></a>
-        </nord-stack>
         <nord-stack justify-content="center" direction="horizontal">
-            <a href="https://docs.linkguard.cc/tos.html">Terms of Service</a>
-            <a href="https://docs.linkguard.cc/privacy.html">Privacy Policy</a>
+            <a href="https://docs.link.eleutheri.com/tos.html">Terms of Service</a>
+            <a href="https://docs.link.eleutheri.com/privacy.html">Privacy Policy</a>
             <a href="./join">Discord</a>
             <a href="https://github.com/NotDSF/LinkGuard">GitHub</a>
          </nord-stack>

@@ -15,6 +15,10 @@ const oauth = new DiscordOauth2({
     redirectUri: `${HOSTNAME}/discord`
 });
 
+/*
+TODO: Link Views
+*/
+
 const sha256 = (s) => crypto.createHash("sha256").update(s).digest("hex");
 
 const RawScript = readFileSync(path.join(__dirname, "luac.out"), "binary");
@@ -57,7 +61,7 @@ async function routes(fastify, options) {
             creation: Date.now()
         });
 
-        return reply.view("index.ejs", { name: Project.Name, hours: Project.UserCooldown });
+        return reply.view("index.ejs", { name: Project.DisplayName, hours: Project.UserCooldown });
     });
 
     // Redirects to #1 Link
@@ -234,8 +238,8 @@ async function routes(fastify, options) {
             await Database.ProjectIncrementCompleted(session.name, 2);
             
             const duration = (Date.now() - session.creation) / 1000;
-            switch (session.project.VerificationType) {
-                case "script":
+            switch (session.project.SessionType) {
+                case "license":
                     await Webhook.LicenseSuccess(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, session.license, duration, session.project.APIKey)
                     await Webhook.LicenseSuccess(session.project.Name, session.user.DiscordID, session.user.CompletedLinks, session.user.FailedLinks, session.license, duration, session.project.APIKey, session.project.Webhook)
                     break;
@@ -257,7 +261,7 @@ async function routes(fastify, options) {
             return reply.redirect("./");
         }
 
-        return reply.view(`${session.project.VerificationType}/finished.ejs`, {
+        return reply.view(`${session.project.SessionType}/finished.ejs`, {
             expire: session.expire,
             key: session.license,
             discord: session.project.ServerInvite,
@@ -295,7 +299,8 @@ async function routes(fastify, options) {
         }
 
         return reply.view("dashboard/index.ejs", {
-            name: Project.Name,
+            name: Project.DisplayName,
+            prefix: Project.Name,
             webhook: Project.Webhook,
             invite: Project.ServerInvite,
             serverid: Project.ServerID,
@@ -305,7 +310,7 @@ async function routes(fastify, options) {
             redeem: Project.UserCooldown,
             completed: Project.CompletedLinks,
             failed: Project.FailedLinks,
-            type: Project.VerificationType,
+            type: Project.SessionType,
             blacklisted: Project.Blacklisted.length
         });
     });
@@ -317,7 +322,7 @@ async function routes(fastify, options) {
     const result = await Database.GetSessions();
     logger(`Fetched ${result.length} user sessions`);
 
-    for (const { IP, Expire, License, DiscordID, Project, Creation } of result) {
+    for (const { IP, Expire, License, DiscordID, Project, Creation } of result) { 
         if (Date.now() >= Number(Expire)) {
             await Database.DeleteSession(IP);
             continue;

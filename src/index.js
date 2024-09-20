@@ -6,7 +6,7 @@ const path = require("path");
 const cors = require("@fastify/cors");
 dotenv.config();
 
-global.HOSTNAME = process.platform === "win32" ? "http://127.0.0.1:8080" : "https://linkguard.cc";
+global.HOSTNAME = process.platform === "win32" ? "http://127.0.0.1:8080" : "https://link.eleutheri.com";
 
 global.sessions = new Map();
 global.pubrefers = [];
