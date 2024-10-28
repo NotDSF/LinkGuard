@@ -337,7 +337,7 @@ async function routes(fastify, options) {
         const session = licenses.get(license);
         
         if (!session || session.name != name) {
-            return reply.send({ error: "License not found" });
+            return reply.status(404).send({ error: "License not found" });
         }
 
         reply.send({
@@ -364,8 +364,9 @@ async function routes(fastify, options) {
             return reply.status(401).send({ error: "Authorization required" });
         }
 
+        const Sessions = [...dsessions.values(), ...licenses.values()];
         let UniqueSessions = [];
-        for (const { stage, complete, creation, license, user, name, expire } of [...sessions.values()].filter(session => session.name === Name)) {
+        for (const { stage, complete, creation, license, user, name, expire } of [...Sessions].filter(session => session.name === Name)) {
             UniqueSessions.push({ stage, complete, creation, license, user, name, expire });
         }
 
