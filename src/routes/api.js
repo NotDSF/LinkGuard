@@ -345,7 +345,7 @@ async function routes(fastify, options) {
             license_key: license,
             expire: session.expire,
             project: name,
-            discord_id: session.user.DiscordID,
+            discord_id: session.user?.DiscordID || "NONE",
             ip: request.IPAddress
         });
     });
