@@ -275,7 +275,7 @@ async function routes(fastify, options) {
 
         const data = tokens.get(token);
 
-        if (!request.headers.referer || request.headers.referer !== `${HOSTNAME}/${data.session.name}/stage-1`) {
+        if (!request.headers.referer || !request.headers.referer.startsWith(`${HOSTNAME}/${data.session.name}/stage-1`)) {
             return console.log("Token Validation Failed", request.headers.referer, data, token);
         }
 
