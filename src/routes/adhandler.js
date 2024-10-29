@@ -264,6 +264,7 @@ async function routes(fastify, options) {
 
     fastify.get("/finished", (request, reply) => {
         const session = sessions.get(request.IPAddress);
+        console.log(session);
         if (!session || session?.stage !== "finished" || session?.stage !== "finishedEx") {
             return reply.redirect("./");
         }
