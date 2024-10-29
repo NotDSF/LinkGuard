@@ -146,8 +146,8 @@ async function routes(fastify, options) {
         session.token = token;
 
         if (session.project.UseOneLink) {
-            session.project.LinkTwo = `${HOSTNAME}/${session.name}/finished`;
-            session.stage = "finishedEx";
+            session.project.LinkTwo = `${HOSTNAME}/${session.name}/stage-2`;
+            session.stage = "link-2-Ex";
         }
 
         console.time("Generated Loader");
@@ -172,11 +172,11 @@ async function routes(fastify, options) {
     // Redirects to /finished
     fastify.get("/stage-2", async (request, reply) => {
         const session = sessions.get(request.IPAddress);
-        if (!session || session.stage !== "link-2") {
+        if (!session || (session?.stage !== "link-2" && session?.stage !== "link-2-Ex")) {
             return reply.redirect("./");
         }
 
-        if (!request.headers.referer || !pubrefers.includes(request.headers.referer)) {
+        if ((!request.headers.referer || !pubrefers.includes(request.headers.referer)) && session.stage !== "link-2-Ex") {
             sessions.delete(request.IPAddress);
 
             try {
@@ -264,16 +264,8 @@ async function routes(fastify, options) {
 
     fastify.get("/finished", (request, reply) => {
         const session = sessions.get(request.IPAddress);
-        if (!session || (session?.stage !== "finished" && session?.stage !== "finishedEx")) {
+        if (!session || session?.stage !== "finished") {
             return reply.redirect("./");
-        }
-
-        if (session.stage === "finishedEx") {
-            const data = tokens.get(session.token);
-            if (!data.used) {
-                console.log("Token Validation Failed x2", request.headers.referer, data, token);
-                return reply.redirect("./");
-            }
         }
 
         return reply.view(`${session.project.SessionType}/finished.ejs`, {
