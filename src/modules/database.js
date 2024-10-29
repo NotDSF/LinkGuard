@@ -56,7 +56,7 @@ module.exports = class Database {
         })
     }
 
-    async UpdateProject(CurrentName, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Description, Enabled) {
+    async UpdateProject(CurrentName, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Description, UseOnlyOne, Enabled) {
         return new Promise(async (resolve, reject) => {
             try {
                 const result = await prisma.project.update({
@@ -71,6 +71,7 @@ module.exports = class Database {
                         UserCooldown,
                         SessionType,
                         Description,
+                        UseOneLink: UseOnlyOne,
                         Enabled: Enabled
                     }
                 });

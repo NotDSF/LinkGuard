@@ -105,6 +105,7 @@
         
         <h2>Advertisement Links</h2>
         <p>Supported: Linkvertise, LootLabs and Work.ink</p>
+        <nord-checkbox id="useonlyone" class="n-margin-s" label="Use only one link." value="true"></nord-checkbox>
         <div class="n-grid-2 n-margin-s">
             <nord-input value="<%=linkone%>" size="s" class="n-margin-be-l" label="Ad-Link #1" type="url" id="adone" placeholder="URL" hint="-> link.eleutheri.com/<%=prefix%>/stage-1" required>
                 <nord-icon slot="start" name="interface-globe"></nord-icon>
@@ -175,7 +176,9 @@
         const SessionEntry = document.getElementById("sessionentry");
         const SessionTable = document.getElementById("sessiontable");
         const DescriptionInput = document.getElementById("description");
-
+        const UseOnlyOne = document.getElementById("useonlyone");
+        UseOnlyOne.checked = "<%=useonlyone%>" == "true";
+        
         const ModalLicense = document.getElementById("licensekey");
         const ModalExpiry = document.getElementById("licenseexpire");
 
@@ -217,6 +220,7 @@
                     LinkOne: LinkOne.value,
                     LinkTwo: LinkTwo.value,
                     Description: DescriptionInput.value,
+                    UseOnlyOne: UseOnlyOne.value,
                     Enabled: true
                 })
             });

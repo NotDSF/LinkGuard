@@ -38,9 +38,11 @@ const UpdateProjectSchema = {
         LinkTwo: { type: "string" },
         UserCooldown: { type: "number" },
         SessionType: { type: "string" },
-        Enabled: { type: "boolean" }
+        Enabled: { type: "boolean" },
+        UseOnlyOne: { type: "boolean" },
+        Description: { type: "string", maxLength: 150, minLength: 3 }
     },
-    required: ["Webhook", "ServerInvite", "ServerID", "LinkOne", "LinkTwo", "UserCooldown", "Enabled", "SessionType", "DisplayName"]
+    required: ["Webhook", "ServerInvite", "ServerID", "LinkOne", "LinkTwo", "UserCooldown", "Enabled", "SessionType", "DisplayName", "UseOnlyOne", "Description"]
 }
 
 const ValidateProjectSchema = {
@@ -226,7 +228,7 @@ async function routes(fastify, options) {
     fastify.put("/project/:name", { schema: { body: UpdateProjectSchema, headers: AuthorizationHeader, params: ProjectNameParam } }, async (request, reply) => {
         const { name } = request.params;
         const { lg_access_token } = request.headers;
-        const { Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Enabled, DisplayName, Description } = request.body;
+        const { Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Enabled, DisplayName, Description, UseOnlyOne } = request.body;
 
         const Project = await Database.GetProject(name);
         if (!Project) {
@@ -283,7 +285,7 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Invalid advertisement link #2" });
         }
 
-        const Result = await Database.UpdateProject(Project.Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Description, Enabled);
+        const Result = await Database.UpdateProject(Project.Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Description, UseOnlyOne, Enabled);
         return reply.send(Result);
     });
 

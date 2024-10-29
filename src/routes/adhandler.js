@@ -140,10 +140,15 @@ async function routes(fastify, options) {
 
             return reply.redirect("./");
         }
-
+        
         const token = crypto.randomUUID();
         session.stage = "link-2";
         session.token = token;
+
+        if (session.project.UseOneLink) {
+            session.project.LinkTwo = `${HOSTNAME}/${session.name}/finished`;
+            session.stage = "finishedEx";
+        }
 
         console.time("Generated Loader");
         const script = await GenerateScript(RawScript, {
@@ -259,8 +264,16 @@ async function routes(fastify, options) {
 
     fastify.get("/finished", (request, reply) => {
         const session = sessions.get(request.IPAddress);
-        if (!session || session?.stage !== "finished") {
+        if (!session || session?.stage !== "finished" || session?.stage !== "finishedEx") {
             return reply.redirect("./");
+        }
+
+        if (session.stage === "finishedEx") {
+            const data = tokens.get(session.token);
+            if (!data.used) {
+                console.log("Token Validation Failed x2", request.headers.referer, data, token);
+                return reply.redirect("./");
+            }
         }
 
         return reply.view(`${session.project.SessionType}/finished.ejs`, {
@@ -315,6 +328,7 @@ async function routes(fastify, options) {
             failed: Project.FailedLinks,
             type: Project.SessionType,
             blacklisted: Project.Blacklisted.length,
+            useonlyone: Project.UseOneLink.toString(),
             description: Project.Description
         });
     });
