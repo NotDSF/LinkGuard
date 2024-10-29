@@ -30,6 +30,7 @@ model Project {
   FailedLinks      Int      @default(0)
   Blacklisted      String[] @default([])
   LinkViews        Int      @default(0)
+  Description      String   @default("")
 }
 
 model User {

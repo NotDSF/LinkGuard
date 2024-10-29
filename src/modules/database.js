@@ -30,7 +30,7 @@ module.exports = class Database {
         });
     }
 
-    async CreateProject(Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, APIKey) {
+    async CreateProject(Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Description, APIKey) {
         return new Promise(async (resolve, reject) => {
             try {
                 const result = await prisma.project.create({
@@ -44,6 +44,7 @@ module.exports = class Database {
                         LinkTwo, 
                         UserCooldown, 
                         SessionType,
+                        Description,
                         APIKey 
                     }
                 });
@@ -55,7 +56,7 @@ module.exports = class Database {
         })
     }
 
-    async UpdateProject(CurrentName, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Enabled) {
+    async UpdateProject(CurrentName, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Description, Enabled) {
         return new Promise(async (resolve, reject) => {
             try {
                 const result = await prisma.project.update({
@@ -69,6 +70,7 @@ module.exports = class Database {
                         LinkTwo, 
                         UserCooldown,
                         SessionType,
+                        Description,
                         Enabled: Enabled
                     }
                 });
@@ -100,6 +102,25 @@ module.exports = class Database {
                 const result = await prisma.user.create({
                     data: { DiscordID }
                 })
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        });
+    }
+
+    async ProjectIncrementView(Name) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.project.update({
+                    where: { Name },
+                    data: {
+                        LinkViews: {
+                            increment: 1
+                        }
+                    }
+                });
                 resolve(result);
             } catch (er) {
                 console.log(er);
@@ -289,6 +310,29 @@ module.exports = class Database {
                     where: { DiscordID },
                     data: {
                         SeenWarning: true
+                    }
+                })
+                resolve(result);
+            } catch (er) {
+                console.log(er);
+                reject(er);
+            }
+        })
+    }
+
+    async GetProjects() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const result = await prisma.project.findMany({
+                    orderBy: {
+                        LinkViews: "desc"
+                    },
+                    select: {
+                        Name: true,
+                        DisplayName: true,
+                        ServerInvite: true,
+                        Description: true,
+                        LinkViews: true
                     }
                 })
                 resolve(result);

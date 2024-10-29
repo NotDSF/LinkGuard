@@ -70,7 +70,11 @@
                 <nord-input class="n-margin-be-l" label="URL Prefix" id="pname" type="text" placeholder="Prefix" hint="- Located at: link.eleutheri.com/:name/" oninput="ProjectInput()" required>
                     <nord-icon slot="start" name="interface-link"></nord-icon>
                 </nord-input>
-    
+                
+                <nord-input class="n-margin-be-l" label="Description" id="description" type="text" placeholder="Name" hint="- Description for your link" required>
+                    <nord-icon slot="start" name="text-left-align"></nord-icon>
+                </nord-input>
+
                 <nord-input label="Discord Webhook" id="awebhook" type="url" placeholder="URL" hint="- Real-time analytics via Webhook" required>
                     <nord-icon slot="start" name="interface-globe"></nord-icon>
                 </nord-input>
@@ -151,6 +155,7 @@
         const LinkTwo = document.getElementById("adtwo");
         const ServerID = document.getElementById("serverid");
         const ServerInvite = document.getElementById("serverinvite");
+        const DescriptionInput = document.getElementById("description");
 
         const APIKeyResult = document.getElementById("apikey");
         const PromtStart = document.getElementById("stageone");
@@ -240,6 +245,7 @@
                     UserCooldown: RedeemCooldown.value,
                     LinkOne: LinkOne.value,
                     LinkTwo: LinkTwo.value,
+                    Description: DescriptionInput.value,
                     Enabled: true
                 })
             });

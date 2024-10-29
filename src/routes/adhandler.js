@@ -61,6 +61,8 @@ async function routes(fastify, options) {
             creation: Date.now()
         });
 
+        await Database.ProjectIncrementView(name);
+
         return reply.view("index.ejs", { name: Project.DisplayName, hours: Project.UserCooldown });
     });
 
@@ -299,6 +301,7 @@ async function routes(fastify, options) {
         }
 
         return reply.view("dashboard/index.ejs", {
+            views: Project.LinkViews,
             name: Project.DisplayName,
             prefix: Project.Name,
             webhook: Project.Webhook,
@@ -311,7 +314,8 @@ async function routes(fastify, options) {
             completed: Project.CompletedLinks,
             failed: Project.FailedLinks,
             type: Project.SessionType,
-            blacklisted: Project.Blacklisted.length
+            blacklisted: Project.Blacklisted.length,
+            description: Project.Description
         });
     });
 }

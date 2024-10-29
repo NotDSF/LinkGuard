@@ -44,36 +44,51 @@
 
     <nord-empty-state>
         <h2><%=name%></h2>
-        <p>You are currently managing your project, you can update project information and view your analytics</p>
-
-        <nord-stack justify-content="center" direction="horizontal" style="text-align: center;">
+        <section class="n-grid-4" id="container">
+            <div>
+                <h3>Page Views</h3>
+                <%=views%>
+            </div>
             <div>
                 <h3>Completed Links</h3>
                 <%=completed%>
             </div>
-            <nord-divider direction="vertical"></nord-divider>
             <div>
                 <h3>Failed Links</h3>
                 <%=failed%>
             </div>
-            <nord-divider direction="vertical"></nord-divider>
             <div>
                 <h3>Blacklisted Users</h3>
                 <%=blacklisted%>
             </div>
-        </nord-stack>
+        </section>
     </nord-empty-state>
 
     <nord-divider direction="horizontal"></nord-divider>
 
     <nord-empty-state id="settings">
-        <section class="n-grid-2">
+        <div class="n-grid-2 n-margin-s">
+            <nord-input value="<%=linkone%>" class="n-margin-be-l" label="Ad-Link #1" type="url" id="adone" placeholder="URL" hint="-> link.eleutheri.com/<%=prefix%>/stage-1" required>
+                <nord-icon slot="start" name="interface-globe"></nord-icon>
+            </nord-input>
+
+            <nord-input value="<%=linktwo%>" label="Ad-Link #2" type="url" id="adtwo" placeholder="URL" hint="-> link.eleutheri.com/<%=prefix%>/stage-2" required>
+                <nord-icon slot="start" name="interface-globe"></nord-icon>
+            </nord-input>
+        </div>
+
+
+        <section class="n-grid-2 n-margin-m">
             <nord-input value="<%=name%>" class="n-margin-be-l" label="Display Name" id="dname" type="text" placeholder="Name" hint="- Display name for your link" required>
                 <nord-icon slot="start" name="text-left-align"></nord-icon>
             </nord-input>
     
             <nord-input value="<%=prefix%>" class="n-margin-be-l" label="URL Prefix" id="pname" type="text" placeholder="Prefix" hint="- Located at: link.eleutheri.com/<%=prefix%>/" oninput="ProjectInput()" disabled>
                 <nord-icon slot="start" name="interface-link"></nord-icon>
+            </nord-input>
+
+            <nord-input class="n-margin-be-l" value="<%=description%>" label="Description" id="description" type="text" placeholder="Name" hint="- Description for your link" required>
+                <nord-icon slot="start" name="text-left-align"></nord-icon>
             </nord-input>
 
             <nord-input value="<%=webhook%>" label="Discord Webhook" id="awebhook" type="url" placeholder="URL" hint="- Real-time analytics via Webhook" required>
@@ -95,17 +110,7 @@
 
             <nord-range value="<%=redeem%>" label="Session Duration" id="redeemcooldown" value="<%=redeem%>" min="1" hint="- How long you want a session to last (hours)" max="72" required></nord-range>
         </section>
-    
-        <div class="n-margin-s">
-            <nord-input value="<%=linkone%>" class="n-margin-be-l" label="Link #1" type="url" id="adone" placeholder="URL" hint="- Redirect to https://link.eleutheri.com/<%=prefix%>/stage-1" required>
-                <nord-icon slot="start" name="interface-globe"></nord-icon>
-            </nord-input>
-
-            <nord-input value="<%=linktwo%>" label="Link #2" type="url" id="adtwo" placeholder="URL" hint="- Redirect to https://link.eleutheri.com/<%=prefix%>/stage-2" required>
-                <nord-icon slot="start" name="interface-globe"></nord-icon>
-            </nord-input>
-        </div>
-
+        
         <nord-button variant="primary" onclick="Save()">Save</nord-button>
     </nord-empty-state>
 
@@ -165,6 +170,7 @@
         const ActiveSessions = document.getElementById("activesession");
         const SessionEntry = document.getElementById("sessionentry");
         const SessionTable = document.getElementById("sessiontable");
+        const DescriptionInput = document.getElementById("description");
 
         const ModalLicense = document.getElementById("licensekey");
         const ModalExpiry = document.getElementById("licenseexpire");
@@ -206,6 +212,7 @@
                     UserCooldown: RedeemCooldown.value,
                     LinkOne: LinkOne.value,
                     LinkTwo: LinkTwo.value,
+                    Description: DescriptionInput.value,
                     Enabled: true
                 })
             });

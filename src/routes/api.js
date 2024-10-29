@@ -21,9 +21,10 @@ const ProjectSchema = {
         LinkTwo: { type: "string" },
         UserCooldown: { type: "number" },
         SessionType: { type: "string" },
-        Enabled: { type: "boolean" }
+        Enabled: { type: "boolean" },
+        Description: { type: "string", maxLength: 150, minLength: 3 }
     },
-    required: ["Name", "Webhook", "ServerInvite", "ServerID", "LinkOne", "LinkTwo", "UserCooldown", "Enabled", "SessionType", "DisplayName"]
+    required: ["Name", "Webhook", "ServerInvite", "ServerID", "LinkOne", "LinkTwo", "UserCooldown", "Enabled", "SessionType", "DisplayName", "Description"]
 }
 
 const UpdateProjectSchema = {
@@ -135,7 +136,7 @@ async function routes(fastify, options) {
     // Create Project
     fastify.post("/project/", { schema: { body: ProjectSchema, headers: AuthorizationHeader } }, async (request, reply) => {
         const { lg_access_token } = request.headers;
-        const { Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, DisplayName } = request.body;
+        const { Name, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, DisplayName, Description } = request.body;
 
         let form = new FormData();
         form.append("response", lg_access_token);
@@ -204,7 +205,7 @@ async function routes(fastify, options) {
         }
 
         const APIKey = crypto.randomUUID();
-        const Result = await Database.CreateProject(Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, sha256(APIKey));
+        const Result = await Database.CreateProject(Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Description, sha256(APIKey));
         
         try {
             await WebhookHandler.CreatedProject(Name, `REDACTED`);    
@@ -221,7 +222,7 @@ async function routes(fastify, options) {
     fastify.put("/project/:name", { schema: { body: UpdateProjectSchema, headers: AuthorizationHeader, params: ProjectNameParam } }, async (request, reply) => {
         const { name } = request.params;
         const { lg_access_token } = request.headers;
-        const { Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Enabled, DisplayName } = request.body;
+        const { Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Enabled, DisplayName, Description } = request.body;
 
         const Project = await Database.GetProject(name);
         if (!Project) {
@@ -274,7 +275,7 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "Invalid advertisement link #2" });
         }
 
-        const Result = await Database.UpdateProject(Project.Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Enabled);
+        const Result = await Database.UpdateProject(Project.Name, DisplayName, Webhook, ServerInvite, ServerID, LinkOne, LinkTwo, UserCooldown, SessionType, Description, Enabled);
         return reply.send(Result);
     });
 
@@ -473,6 +474,11 @@ async function routes(fastify, options) {
 
         licenses.set(license, Session);
         reply.send(Session);
+    });
+
+    fastify.get("/content/", async (request, reply) => {
+        const projects = await Database.GetProjects();
+        reply.send(projects);
     });
 }
 
