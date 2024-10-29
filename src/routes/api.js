@@ -157,6 +157,10 @@ async function routes(fastify, options) {
             return reply.status(400).send({ error: "The project name contains invalid characters" });
         }
 
+        if (Description.match(/[^\w\s!.(),/\-?:£$"']/)) {
+            return reply.status(400).send({ error: "The description contains invalid characters" })
+        }
+
         if (!DisplayName.match(/^[\w'\-\!\s.\d]+$/)) {
             return reply.status(400).send({ error: "The display name contains invalid characters" });
         }
@@ -231,6 +235,10 @@ async function routes(fastify, options) {
 
         if (Project.APIKey !== sha256(lg_access_token)) {
             return reply.status(401).send({ error: "Authorization required" });
+        }
+
+        if (Description.match(/[^\w\s!.(),/\-?:£$"']/)) {
+            return reply.status(400).send({ error: "The description contains invalid characters" })
         }
 
         if (!DisplayName.match(/^[\w'\-\!\s.\d]+$/)) {

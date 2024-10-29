@@ -330,7 +330,6 @@ module.exports = class Database {
                     select: {
                         Name: true,
                         DisplayName: true,
-                        ServerInvite: true,
                         Description: true,
                         LinkViews: true
                     }

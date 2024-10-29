@@ -67,51 +67,55 @@
     <nord-divider direction="horizontal"></nord-divider>
 
     <nord-empty-state id="settings">
-        <div class="n-grid-2 n-margin-s">
-            <nord-input value="<%=linkone%>" class="n-margin-be-l" label="Ad-Link #1" type="url" id="adone" placeholder="URL" hint="-> link.eleutheri.com/<%=prefix%>/stage-1" required>
-                <nord-icon slot="start" name="interface-globe"></nord-icon>
-            </nord-input>
-
-            <nord-input value="<%=linktwo%>" label="Ad-Link #2" type="url" id="adtwo" placeholder="URL" hint="-> link.eleutheri.com/<%=prefix%>/stage-2" required>
-                <nord-icon slot="start" name="interface-globe"></nord-icon>
-            </nord-input>
-        </div>
-
-
-        <section class="n-grid-2 n-margin-m">
-            <nord-input value="<%=name%>" class="n-margin-be-l" label="Display Name" id="dname" type="text" placeholder="Name" hint="- Display name for your link" required>
+        <h2>Project Settings</h2>
+        <section class="n-grid-2 n-margin-xl">
+            <nord-input value="<%=name%>" size="s" class="n-margin-be-l" label="Display Name" id="dname" type="text" placeholder="Name" hint="Used visually to name your content." required>
                 <nord-icon slot="start" name="text-left-align"></nord-icon>
             </nord-input>
     
-            <nord-input value="<%=prefix%>" class="n-margin-be-l" label="URL Prefix" id="pname" type="text" placeholder="Prefix" hint="- Located at: link.eleutheri.com/<%=prefix%>/" oninput="ProjectInput()" disabled>
+            <nord-input value="<%=prefix%>" size="s" class="n-margin-be-l" label="URL Prefix" id="pname" type="text" placeholder="Prefix" hint="Where your content is located." oninput="ProjectInput()" disabled>
                 <nord-icon slot="start" name="interface-link"></nord-icon>
             </nord-input>
 
-            <nord-input class="n-margin-be-l" value="<%=description%>" label="Description" id="description" type="text" placeholder="Name" hint="- Description for your link" required>
+            <nord-input class="n-margin-be-l" size="s" value="<%=description%>" label="Description" id="description" type="text" placeholder="Name" hint="Used visually to describe your content." required>
                 <nord-icon slot="start" name="text-left-align"></nord-icon>
             </nord-input>
 
-            <nord-input value="<%=webhook%>" label="Discord Webhook" id="awebhook" type="url" placeholder="URL" hint="- Real-time analytics via Webhook" required>
+            <nord-input value="<%=webhook%>" size="s" label="Discord Webhook" id="awebhook" type="url" placeholder="URL" hint="Get real-time analytics via Webhook." required>
                 <nord-icon slot="start" name="interface-globe"></nord-icon>
             </nord-input>
 
-            <nord-input value="<%=serverid%>" label="Server ID" id="serverid" type="text" placeholder="ID" hint="- Your Discord Server ID" required>
+            <nord-input value="<%=serverid%>" size="s" label="Server ID" id="serverid" type="text" placeholder="ID" hint="Your Discord Server ID." required>
                 <nord-icon slot="start" name="interface-email"></nord-icon>
             </nord-input>
 
-            <nord-input value="<%=invite%>" label="Server Invite" id="serverinvite" type="url" placeholder="URL"  hint="- Your Discord Invite" required>
+            <nord-input value="<%=invite%>" size="s" label="Server Invite" id="serverinvite" type="url" placeholder="URL"  hint="Your Discord Invite." required>
                 <nord-icon slot="start" name="interface-globe"></nord-icon>
             </nord-input>
 
-            <nord-select value="<%=type%>" label="Session Type" id="ptype" value="script" hint="- Choose how to verify completed links" required>
+
+
+            <nord-select value="<%=type%>" size="s" label="Session Type" id="ptype" value="script" hint="Choose how to verify completed links." required>
                 <option value="license">License Key</option>
                 <option value="discord">Discord ID</option>
             </nord-select>
 
-            <nord-range value="<%=redeem%>" label="Session Duration" id="redeemcooldown" value="<%=redeem%>" min="1" hint="- How long you want a session to last (hours)" max="72" required></nord-range>
+            <nord-range value="<%=redeem%>" size="s" label="Session Duration" id="redeemcooldown" value="<%=redeem%>" min="1" hint="How long you want a session to last (hours)" max="72" required></nord-range>
         </section>
         
-        <nord-button variant="primary" onclick="Save()">Save</nord-button>
+        <h2>Advertisement Links</h2>
+        <p>Supported: Linkvertise, LootLabs and Work.ink</p>
+        <div class="n-grid-2 n-margin-s">
+            <nord-input value="<%=linkone%>" size="s" class="n-margin-be-l" label="Ad-Link #1" type="url" id="adone" placeholder="URL" hint="-> link.eleutheri.com/<%=prefix%>/stage-1" required>
+                <nord-icon slot="start" name="interface-globe"></nord-icon>
+            </nord-input>
+
+            <nord-input value="<%=linktwo%>" size="s" label="Ad-Link #2" type="url" id="adtwo" placeholder="URL" hint="-> link.eleutheri.com/<%=prefix%>/stage-2" required>
+                <nord-icon slot="start" name="interface-globe"></nord-icon>
+            </nord-input>
+        </div>
+
+        <nord-button variant="danger" onclick="Save()">Save Project</nord-button>
     </nord-empty-state>
 
     <nord-divider direction="horizontal"></nord-divider>
@@ -129,7 +133,7 @@
 
     <nord-empty-state>
         <h2 id="activesession">Active Sessions</h2>
-        <nord-button variant="primary" class="n-margin-s" onclick="CreateLicense()">Create a License</nord-button>
+        <nord-button variant="dashed" class="n-margin-s" onclick="CreateLicense()">Create a License Key</nord-button>
         <nord-table>
             <table>
               <thead>
