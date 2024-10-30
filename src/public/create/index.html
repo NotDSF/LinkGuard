@@ -62,7 +62,7 @@
         <p>Free of charge, no-sign up required.</p>
         
         <div id="stageone">
-            <section class="n-grid-2">
+            <section class="n-grid-2" id="gridcontainer">
                 <nord-input class="n-margin-be-l" label="Display Name" id="dname" type="text" placeholder="Name" hint="- Display name for your link" required>
                     <nord-icon slot="start" name="text-left-align"></nord-icon>
                 </nord-input>
@@ -75,15 +75,15 @@
                     <nord-icon slot="start" name="text-left-align"></nord-icon>
                 </nord-input>
 
-                <nord-input label="Discord Webhook" id="awebhook" type="url" placeholder="URL" hint="- Real-time analytics via Webhook" required>
+                <nord-input label="Discord Webhook" class="n-margin-be-l" id="awebhook" type="url" placeholder="URL" hint="- Real-time analytics via Webhook" required>
                     <nord-icon slot="start" name="interface-globe"></nord-icon>
                 </nord-input>
     
-                <nord-input label="Server ID" id="serverid" type="text" placeholder="ID" hint="- Your Discord Server ID" required>
+                <nord-input label="Server ID" class="n-margin-be-l" id="serverid" type="text" placeholder="ID" hint="- Your Discord Server ID" required>
                     <nord-icon slot="start" name="navigation-settings"></nord-icon>
                 </nord-input>
     
-                <nord-input label="Server Invite" id="serverinvite" type="url" placeholder="URL"  hint="- Your Discord Invite" required>
+                <nord-input label="Server Invite" class="n-margin-be-l" id="serverinvite" type="url" placeholder="URL"  hint="- Your Discord Invite" required>
                     <nord-icon slot="start" name="interface-globe"></nord-icon>
                 </nord-input>
     
@@ -164,6 +164,12 @@
     
         const LicenseKeyInfo = document.getElementById("licensekeyinfo");
         const DiscordKeyInfo = document.getElementById("discordidinfo");
+
+        const MainContainer = document.getElementById("gridcontainer");
+        if (screen.width <= 600) {
+            MainContainer.className = "n-grid-1";
+        }
+
 
         function Back() {
             if (!IsVisible(PromtEnd)) return;

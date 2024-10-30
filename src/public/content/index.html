@@ -89,6 +89,10 @@
         const prototype = document.getElementById("card");
         const div = document.getElementById("container");
 
+        if (screen.width <= 600) {
+            div.className = "n-grid-2";
+        }
+
         function MakeCard(Name, Views, Description, APIName) {
             const clone = prototype.cloneNode(true);
             clone.childNodes[1].textContent = Name;
@@ -106,10 +110,6 @@
             for (const { Name, DisplayName, ServerInvite, Description, LinkViews } of projects) {
                 MakeCard(DisplayName, LinkViews, Description, Name)
             }
-
-            success.textContent = info.completed.toLocaleString();
-            fails.textContent = info.fails.toLocaleString();
-            revenue.textContent = `$${(info.completed * 0.07).toLocaleString()}`
         })();
     </script>
 </body>
