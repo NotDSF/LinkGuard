@@ -490,6 +490,16 @@ async function routes(fastify, options) {
         const projects = await Database.GetProjects();
         reply.send(projects);
     });
+
+    fastify.get("/test", (request, reply) => {
+        console.log(request.headers, request.body);
+        reply.send({ ok: true });
+    });
+
+    fastify.post("/test", (request, reply) => {
+        console.log(request.headers, request.body);
+        reply.send({ ok: true });
+    })
 }
 
 module.exports = routes;
