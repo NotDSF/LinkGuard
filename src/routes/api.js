@@ -491,12 +491,14 @@ async function routes(fastify, options) {
         reply.send(projects);
     });
 
+    fastify.register(require('@fastify/multipart'), { attachFieldsToBody: "keyValues" });
+
     fastify.get("/test", (request, reply) => {
         console.log(request.headers, request.body);
         reply.send({ ok: true });
     });
 
-    fastify.post("/test", (request, reply) => {
+    fastify.post("/testa", (request, reply) => {
         console.log(request.headers, request.body);
         reply.send({ ok: true });
     })
